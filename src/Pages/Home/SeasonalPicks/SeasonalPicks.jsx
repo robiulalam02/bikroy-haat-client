@@ -38,15 +38,15 @@ const cardVariants = {
 
 export default function SeasonalPicks() {
   return (
-    <section className="py-12 px-4 md:px-10 lg:px-20 bg-white">
+    <section className="py-12 px-4 md:px-10 lg:px-20 min-h-[500px] bg-white">
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="text-3xl font-bold text-center mb-10 text-gray-800"
+        className="text-4xl text-center mb-10 text-gray-800 font-gliker"
       >
-        🍂 Seasonal Picks
+        <span className="text-primary">Seasonal</span> Picks
       </motion.h2>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

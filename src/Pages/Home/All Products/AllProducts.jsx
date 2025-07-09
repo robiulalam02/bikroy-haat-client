@@ -84,14 +84,14 @@ const card = {
 
 export default function AllProducts() {
     return (
-        <section className="px-4 md:px-10 lg:px-20 py-12 bg-gray-100">
+        <section className="px-4 md:px-10 lg:px-20 pt-10 pb-20 ">
             <motion.h2
                 initial={{ opacity: 0, y: -30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="text-3xl font-bold text-center mb-10"
+                className="text-4xl text-center mb-20 font-gliker"
             >
-                🛍️ Latest Market Prices
+                <span className="text-primary">Latest</span> Market Prices
             </motion.h2>
 
             <motion.div

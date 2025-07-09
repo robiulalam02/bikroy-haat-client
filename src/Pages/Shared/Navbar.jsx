@@ -1,8 +1,10 @@
 import React from 'react'
 import Logo from '../../Components/Logo/Logo'
-import { NavLink } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 
 const Navbar = () => {
+
+    const navigate = useNavigate();
 
     const links = <>
         <li>
@@ -53,7 +55,7 @@ const Navbar = () => {
                     <button className='btn btn-primary text-white'>
                         Login
                     </button>
-                    <button className='btn border border-primary bg-transparent text-primary hover:bg-primary hover:text-white transition'>
+                    <button onClick={()=> navigate('/register')} className='btn border border-primary bg-transparent text-primary hover:bg-primary hover:text-white transition'>
                         Register
                     </button>
                 </div>
