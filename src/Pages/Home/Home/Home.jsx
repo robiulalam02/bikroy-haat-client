@@ -15,7 +15,6 @@ const Home = () => {
       <AllProducts />
       <Advertisements />
       <BuyerTips />
-      {/* <ReviewSlider /> */}
       <SeasonalPicks />
     </div>
   )

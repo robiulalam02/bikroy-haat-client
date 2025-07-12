@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Logo from '../../Components/Logo/Logo'
 import { NavLink, useNavigate } from 'react-router'
+import { AuthContext } from '../../Providers/AuthContext'
 
 const Navbar = () => {
 
+    const { profile, userSignOut } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    console.log(profile);
 
     const links = <>
         <li>
@@ -16,6 +20,12 @@ const Navbar = () => {
         <li>
             <NavLink to="/about-us">About us</NavLink>
         </li>
+        {
+            profile &&
+            <li>
+                <NavLink to="/dashboard">Dashboard</NavLink>
+            </li>
+        }
     </>
 
     return (
@@ -39,9 +49,7 @@ const Navbar = () => {
                         <li><a>Item 3</a></li>
                     </ul>
                 </div>
-                <button>
-                    <Logo />
-                </button>
+                <Logo />
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
@@ -51,14 +59,21 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                <div className="flex items-center gap-2">
-                    <button className='btn btn-primary text-white'>
-                        Login
-                    </button>
-                    <button onClick={()=> navigate('/register')} className='btn border border-primary bg-transparent text-primary hover:bg-primary hover:text-white transition'>
-                        Register
-                    </button>
-                </div>
+                {
+                    profile ?
+                        <button onClick={userSignOut} className='btn btn-primary text-white'>
+                            Logout
+                        </button>
+                        :
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => navigate('/login')} className='btn btn-primary text-white'>
+                                Login
+                            </button>
+                            <button onClick={() => navigate('/register')} className='btn border border-primary bg-transparent text-primary hover:bg-primary hover:text-white transition'>
+                                Register
+                            </button>
+                        </div>
+                }
             </div>
         </div>
     )
