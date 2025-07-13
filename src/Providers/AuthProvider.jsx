@@ -11,6 +11,7 @@ const AuthProvider = ({ children }) => {
 
     const axiosPublic = useAxiosPublic();
     const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const userRegister = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password);
@@ -39,6 +40,7 @@ const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 setProfile(currentUser);
+                setLoading(false)
                 const user = { email: currentUser?.email }; // fix: wrap as object for POST
                 try {
                     const res = await axiosPublic.post("/api/jwt", user);
@@ -64,7 +66,8 @@ const AuthProvider = ({ children }) => {
         googleSignIn,
         updateUserProfile,
         userSignOut,
-        profile
+        profile,
+        loading
     }
 
     return (

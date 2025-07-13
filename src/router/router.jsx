@@ -7,6 +7,7 @@ import Login from "../Pages/Authentication/Login";
 import Dashboard from "../Layouts/Dashboard";
 import AddProduct from "../Pages/Dashboard/Vendor/AddProduct";
 import MyProducts from "../Pages/Dashboard/Vendor/MyProducts";
+import UpdateProduct from "../Pages/Dashboard/Vendor/UpdateProduct";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: 'my-products',
         Component: MyProducts
+      },
+      {
+        path: 'update-product/:id',
+        Component: UpdateProduct
       }
     ]
   }

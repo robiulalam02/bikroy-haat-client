@@ -3,6 +3,8 @@ import { NavLink, Outlet } from 'react-router'
 import Logo from '../Components/Logo/Logo'
 import Navbar from '../Components/Dashboard/Navbar'
 import Footer from '../Components/Dashboard/Footer'
+import Loading from '../Components/Loaders/Loading'
+import useAuth from '../Hooks/useAuth'
 
 const Dashboard = () => {
 
