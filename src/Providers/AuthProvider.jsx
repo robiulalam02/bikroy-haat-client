@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
 import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { auth } from '../Firebase/firebase.init';
+import useAxiosPublic from '../Hooks/useAxiosPublic';
+import toast from 'react-hot-toast';
 
 const provider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
 
+    const axiosPublic = useAxiosPublic();
     const [profile, setProfile] = useState(null);
 
     const userRegister = (email, password) => {
@@ -33,15 +36,27 @@ const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
-                setProfile(currentUser)
-            } else{
-                setProfile(null)
+                setProfile(currentUser);
+                const user = { email: currentUser?.email }; // fix: wrap as object for POST
+                try {
+                    const res = await axiosPublic.post("/api/jwt", user);
+                    localStorage.setItem("access-token", res.data.token);
+                } catch (error) {
+                    console.error("Login failed", error);
+                    toast.error("Login failed!");
+                }
+
+            } else {
+                setProfile(null);
+                localStorage.removeItem("access-token");
             }
-        })
-        return () => unsubscribe;
-    }, [])
+        });
+
+        return () => unsubscribe();
+    }, []);
+
 
     const user = {
         userRegister,
