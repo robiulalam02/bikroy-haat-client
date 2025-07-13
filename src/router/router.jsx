@@ -8,6 +8,7 @@ import Dashboard from "../Layouts/Dashboard";
 import AddProduct from "../Pages/Dashboard/Vendor/AddProduct";
 import MyProducts from "../Pages/Dashboard/Vendor/MyProducts";
 import UpdateProduct from "../Pages/Dashboard/Vendor/UpdateProduct";
+import AddAdvertisement from "../Pages/Dashboard/Vendor/AddAdvertisement";
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ export const router = createBrowserRouter([
       {
         path: 'update-product/:id',
         Component: UpdateProduct
+      },
+      {
+        path: 'add-advertisements',
+        Component: AddAdvertisement
       }
     ]
   }
