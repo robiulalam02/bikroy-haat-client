@@ -1,6 +1,8 @@
 import React from 'react'
+import useAuth from '../../Hooks/useAuth'
 
 const Navbar = () => {
+    const {profile} = useAuth();
     return (
         <div class="w-full bg-white  border-b border-gray-200 ">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,7 +45,7 @@ const Navbar = () => {
                         </button>
 
                         <div class="relative w-8 h-8">
-                            <img class="rounded-full object-cover w-full h-full" src="https://i.pravatar.cc/40?img=3" alt="User Avatar" />
+                            <img class="rounded-full object-cover w-full h-full" src={profile?.photoURL} alt="User Avatar" />
                         </div>
                     </div>
                 </div>

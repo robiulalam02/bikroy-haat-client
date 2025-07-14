@@ -5,9 +5,11 @@ import toast from "react-hot-toast";
 import { uploadImageToImgBB } from '../../../API/utils';
 import Spinner from '../../../Components/Loaders/Spinner';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
+import useAuth from '../../../Hooks/useAuth'
 
 const AddAdvertisement = () => {
 
+    const {profile} = useAuth();
     const axiosPublic = useAxiosPublic();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [uploading, setUploading] = useState(false);
@@ -37,7 +39,8 @@ const AddAdvertisement = () => {
 
         const adsData = {
             ...data,
-            image: productImage
+            image: productImage,
+            vendorEmail: profile?.email,
         }
 
         try{

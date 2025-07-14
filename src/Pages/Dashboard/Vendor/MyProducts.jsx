@@ -120,7 +120,7 @@ const MyProducts = () => {
                     :
                     <div className='flex flex-col items-center justify-center h-screen gap-2'>
                         <h3>You doesn't added any products yet !!</h3>
-                        <button className='btn btn-primary text-white'>Add Product</button>
+                        <button onClick={()=> navigate('/dashboard/add-product')} className='btn btn-primary text-white'>Add Product</button>
                     </div>
             }
 

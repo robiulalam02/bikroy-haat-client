@@ -7,9 +7,10 @@ import Loading from '../Components/Loaders/Loading'
 
 const MainLayout = () => {
     const {loading} = useAuth();
+    console.log(loading)
 
     if (loading) {
-        return <Loading />
+        return <Loading background={true} />
     }
 
     return (

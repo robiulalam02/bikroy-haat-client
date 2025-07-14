@@ -21,6 +21,9 @@ const Dashboard = () => {
         <li>
             <NavLink to="/dashboard/add-advertisements">Add Advertisement</NavLink>
         </li>
+        <li>
+            <NavLink to="/dashboard/my-advertisements">My Advertisement</NavLink>
+        </li>
     </>
 
     return (

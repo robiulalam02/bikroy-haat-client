@@ -9,6 +9,8 @@ import AddProduct from "../Pages/Dashboard/Vendor/AddProduct";
 import MyProducts from "../Pages/Dashboard/Vendor/MyProducts";
 import UpdateProduct from "../Pages/Dashboard/Vendor/UpdateProduct";
 import AddAdvertisement from "../Pages/Dashboard/Vendor/AddAdvertisement";
+import MyAdvertisements from "../Pages/Dashboard/Vendor/MyAdvertisements";
+import ProductDetails from "../Pages/Home/All Products/ProductDetails";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +20,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         Component: Home
+      },
+      {
+        path: '/product-details/:id',
+        Component: ProductDetails
       }
     ]
   },
@@ -32,7 +38,7 @@ export const router = createBrowserRouter([
       {
         path: '/login',
         Component: Login
-      }
+      },
     ]
   },
   {
@@ -58,6 +64,10 @@ export const router = createBrowserRouter([
       {
         path: 'add-advertisements',
         Component: AddAdvertisement
+      },
+      {
+        path: 'my-advertisements',
+        Component: MyAdvertisements
       }
     ]
   }

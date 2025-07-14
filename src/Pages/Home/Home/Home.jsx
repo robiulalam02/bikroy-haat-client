@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import BannerSlider from '../Banner/BannerSlider'
-import AllProducts from '../All Products/AllProducts'
+import Products from '../All Products/Products'
 import Advertisements from '../Advertisements/Advertisements'
 import BuyerTips from '../ReviewSlider/BuyerTips'
 import ReviewSlider from '../ReviewSlider/ReviewSlider'
@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <div>
       <BannerSlider />
-      <AllProducts />
+      <Products />
       <Advertisements />
       <BuyerTips />
       <SeasonalPicks />

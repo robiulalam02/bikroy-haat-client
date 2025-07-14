@@ -29,7 +29,7 @@ const itemVariants = {
 
 export default function BuyerTips() {
   return (
-    <section className="py-12 min-h-[600px] px-4 md:px-10 lg:px-20">
+    <section className="py-12 min-h-[600px] px-4 md:px-10 lg:px-20 bg-white">
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}

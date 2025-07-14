@@ -38,9 +38,9 @@ const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            setLoading(false)
             if (currentUser) {
                 setProfile(currentUser);
-                setLoading(false)
                 const user = { email: currentUser?.email }; // fix: wrap as object for POST
                 try {
                     const res = await axiosPublic.post("/api/jwt", user);

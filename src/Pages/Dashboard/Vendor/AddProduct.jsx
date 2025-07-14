@@ -43,11 +43,11 @@ const AddProduct = () => {
 
     const [selectedDate, setSelectedDate] = useState(new Date());
 
-    const onSubmit = async(data) => {
+    const onSubmit = async (data) => {
         const today = new Date().toISOString().split("T")[0];
         const product = {
             vendorEmail: profile?.email,
-            vendorName: profile?.name,
+            vendorName: profile?.displayName,
             marketName: data.marketName,
             date: selectedDate.toISOString().split("T")[0],
             marketDescription: data.marketDescription,
@@ -73,7 +73,7 @@ const AddProduct = () => {
             } else {
                 toast.error("Something went wrong!");
             }
-        }catch (error){
+        } catch (error) {
             console.log(error)
         }
     };
