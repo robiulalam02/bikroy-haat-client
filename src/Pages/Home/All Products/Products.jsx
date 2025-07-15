@@ -5,19 +5,24 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { PiEyeLight } from "react-icons/pi";
 import { TiHeart } from "react-icons/ti";
 import { useNavigate } from "react-router";
+import Loading from '../../../Components/Loaders/Loading'
 
 export default function Products() {
 
     const axiosPublic = useAxiosPublic();
     const navigate = useNavigate();
 
-    const { data: products = [], isLoading } = useQuery({
+    const { data: products = [], isLoading, isPending } = useQuery({
         queryKey: ['products'],
         queryFn: async () => {
             const res = await axiosPublic.get('/card/products');
             return res.data;
         }
     });
+
+    if (isLoading || isPending) {
+        return <Loading />
+    }
 
     console.log(products)
 
