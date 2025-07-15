@@ -11,6 +11,7 @@ import UpdateProduct from "../Pages/Dashboard/Vendor/UpdateProduct";
 import AddAdvertisement from "../Pages/Dashboard/Vendor/AddAdvertisement";
 import MyAdvertisements from "../Pages/Dashboard/Vendor/MyAdvertisements";
 import ProductDetails from "../Pages/Home/All Products/ProductDetails";
+import Payment from "../Pages/Payment/Payment";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: '/product-details/:id',
         Component: ProductDetails
+      },
+      {
+        path: '/payment/:id',
+        Component: Payment
       }
     ]
   },

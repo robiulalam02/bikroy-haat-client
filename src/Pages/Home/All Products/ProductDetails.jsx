@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import { useQuery } from '@tanstack/react-query';
@@ -16,8 +16,10 @@ const ProductDetails = () => {
   console.log(id);
   const { proflile } = useAuth();
   const [quantity, setQuantity] = useState(1);
+
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
+  const navigate = useNavigate();
 
   const axiosSecure = useAxiosSecure();
   const axiosPublic = useAxiosPublic();
@@ -30,6 +32,9 @@ const ProductDetails = () => {
     },
     enabled: !!id,
   });
+
+  const totalPrice = parseFloat(product?.pricePerUnit || 0) * quantity;
+  console.log(totalPrice)
 
   const { data: reviews = [], isLoading: reviewLoading, refetch: reviewRefetch } = useQuery({
     queryKey: ['reviews', id],
@@ -88,6 +93,14 @@ const ProductDetails = () => {
       console.log(error)
     }
   }
+
+  const handleBuyNow = (id) => {
+    navigate(`/payment/${id}`, {
+      state: {
+        totalPrice,
+      },
+    });
+  };
 
   return (
     <div className='max-w-screen-lg mx-auto'>
@@ -168,7 +181,7 @@ const ProductDetails = () => {
                     +
                   </button>
                 </div>
-                <button class="inline-flex items-center justify-center gap-1 border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-primary hover:bg-primary/90 border-base-200 text-stone-50 rounded-lg transition antialiased">
+                <button onClick={()=>handleBuyNow(product._id)} class="inline-flex items-center justify-center gap-1 border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-primary hover:bg-primary/90 border-base-200 text-stone-50 rounded-lg transition antialiased">
                   <HiOutlineShoppingBag className='text-lg' />
                   Buy Product
                 </button>
