@@ -9,8 +9,8 @@ import DatePicker from "react-datepicker";
 import Spinner from '../../../Components/Loaders/Spinner';
 import { uploadImageToImgBB } from '../../../API/utils';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
-import toast from 'react-hot-toast';
 import Loading from '../../../Components/Loaders/Loading';
+import { toast } from 'react-toastify';
 
 const UpdateProduct = () => {
     const { id } = useParams();

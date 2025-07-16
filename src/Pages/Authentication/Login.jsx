@@ -5,9 +5,9 @@ import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../Providers/AuthContext";
 import Spinner from "../../Components/Loaders/Spinner";
-import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import { toast } from "react-toastify";
 
 const Login = () => {
 

@@ -9,16 +9,20 @@ import { FaStar } from "react-icons/fa";
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import useAuth from '../../../Hooks/useAuth'
+import PriceComparisonChart from '../../../Components/Comparison/PriceComparisonChart';
+import Reviews from '../../../Components/Reviews/Reviews';
+import { toast } from 'react-toastify';
 
 
 const ProductDetails = () => {
   const { id } = useParams();
   console.log(id);
-  const { proflile } = useAuth();
+  const { profile } = useAuth();
   const [quantity, setQuantity] = useState(1);
 
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
+  const [showAllReviews, setShowAllReviews] = useState(false);
   const navigate = useNavigate();
 
   const axiosSecure = useAxiosSecure();
@@ -45,7 +49,10 @@ const ProductDetails = () => {
     enabled: !!id
   });
 
-  console.log(reviews)
+  console.log(reviews);
+
+  // Determine which reviews to display
+  const reviewsData = showAllReviews ? reviews : reviews?.slice(0, 2);
 
   const {
     register,
@@ -68,7 +75,7 @@ const ProductDetails = () => {
       review: data.review,
       rating,
       productId: product?._id,
-      image: proflile?.photoURL
+      image: profile?.photoURL
     };
 
     console.log(reviewData)
@@ -101,6 +108,30 @@ const ProductDetails = () => {
       },
     });
   };
+
+  const handleWatchlist = async () => {
+    const { _id, ...productData } = product;
+    const data = {
+      ...productData,
+      productId: product._id,
+      user: profile?.email
+    }
+    console.log(data)
+
+    // post req to save watchlist in DB
+    try {
+      const res = await axiosSecure.post('/watchlist', data)
+      console.log(res.data);
+      if (res.data.insertedId) {
+        toast.success('product added to watchlist')
+      } else {
+        toast.error('something went wrong while adding product to watchlist')
+      }
+    } catch (error) {
+      console.log(error.response.data.message)
+      toast.error(error.response.data.message)
+    }
+  }
 
   return (
     <div className='max-w-screen-lg mx-auto'>
@@ -181,12 +212,12 @@ const ProductDetails = () => {
                     +
                   </button>
                 </div>
-                <button onClick={()=>handleBuyNow(product._id)} class="inline-flex items-center justify-center gap-1 border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-primary hover:bg-primary/90 border-base-200 text-stone-50 rounded-lg transition antialiased">
+                <button onClick={() => handleBuyNow(product._id)} class="inline-flex items-center justify-center gap-1 border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-primary hover:bg-primary/90 border-base-200 text-stone-50 rounded-lg transition antialiased">
                   <HiOutlineShoppingBag className='text-lg' />
                   Buy Product
                 </button>
               </div>
-              <button className='flex items-center gap-1 hover:text-primary transition duration-300'><IoIosHeartEmpty /> Add to wishlist</button>
+              <button onClick={handleWatchlist} className='flex items-center gap-1 hover:text-primary transition duration-300'><IoIosHeartEmpty /> Add to watchlist</button>
             </div>
 
           </div>
@@ -195,45 +226,28 @@ const ProductDetails = () => {
 
       </div>
 
+      {/* comparison */}
+      <div className='bg-white p-4 my-10'>
+        <PriceComparisonChart product={product} />
+      </div>
+
       {/* Review Section */}
 
       <div className='bg-white p-4 my-10 min-h-screen'>
 
-        <h2 className='text-primary text-lg text-center uppercase font-medium'>User Reviews</h2>
+        <h2 className='text-primary text-xl text-center uppercase font-semibold '>User Reviews</h2>
 
-        <div className='grid grid-cols-1 gap-4'>
-          {
-            reviews?.map(review => (
-              <div class="py-8 text-left border border-gray-200 px-4 m-2">
-                <div class="flex items-start">
-                  <img class="block h-10 w-10 max-w-full flex-shrink-0 rounded-full align-middle" src={review.image} alt="" />
-
-                  <div class="ml-6">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, index) => (
-                        <svg
-                          key={index}
-                          className={`h-5 w-5 ${index < review.rating ? "text-yellow-500" : "text-gray-300"}`}
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p class="mt-5 text-base text-gray-900">{review.review}</p>
-                    <p class="mt-5 text-sm font-bold text-gray-900">{review.name}</p>
-                    <p class="mt-1 text-sm text-gray-600">{review.createdAt}</p>
-                  </div>
-                </div>
-              </div>
-            ))
-          }
-        </div>
+        {
+          reviews?.length > 0 ?
+            <Reviews setShowAllReviews={setShowAllReviews} showAllReviews={showAllReviews} reviewsData={reviewsData} />
+            :
+            <div className='h-40 flex justify-center items-center'>
+              <p className='text-error text-center'>currently there are no reviews available for this product</p>
+            </div>
+        }
 
         <div className='mt-10'>
-          <h2 className='text-primary text-lg text-center uppercase font-medium'>Share Your Feedback</h2>
+          <h2 className='text-primary text-xl text-center uppercase font-semibold'>Share Your Feedback</h2>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="max-w-md mx-auto p-6 shadow-md rounded-xl space-y-4 mt-2"

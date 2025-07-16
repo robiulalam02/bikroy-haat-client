@@ -5,8 +5,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { uploadImageToImgBB } from '../../../API/utils';
 import Spinner from '../../../Components/Loaders/Spinner';
-import toast from 'react-hot-toast';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
+import { toast } from 'react-toastify';
 
 const AddProduct = () => {
 

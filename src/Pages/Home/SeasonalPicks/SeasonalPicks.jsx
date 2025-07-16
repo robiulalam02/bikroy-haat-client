@@ -49,7 +49,7 @@ export default function SeasonalPicks() {
         <span className="text-primary">Seasonal</span> Picks
       </motion.h2>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-screen-2xl mx-auto">
         {seasonalItems.map((item, index) => (
           <motion.div
             key={index}

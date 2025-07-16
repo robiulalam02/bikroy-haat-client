@@ -2,19 +2,33 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import React from 'react'
 import CheckoutForm from './CheckoutForm';
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
+import Loading from '../../Components/Loaders/Loading';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PAYMENT_SECRET);
 
 const Payment = () => {
+    const { id } = useParams();
     const location = useLocation();
     const { totalPrice } = location.state || {};
+
+    const axiosSecure = useAxiosSecure();
+
+    const { isPending, isLoading, error, data: product } = useQuery({
+        queryKey: ['product', id],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/products/${id}`);
+            return res.data;
+        }
+    })
 
     return (
         <div className='max-w-screen-xl mx-auto flex items-center'>
             <div className='w-6/12'>
                 <Elements stripe={stripePromise} >
-                    <CheckoutForm price={totalPrice} />
+                    <CheckoutForm price={totalPrice} product={product} />
                 </Elements>
             </div>
             <div class="p-6 border bg-base-100 border-gray-200 rounded-3xl w-md group transition-all duration-500 hover:border-primary ">

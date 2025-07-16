@@ -30,32 +30,34 @@ const itemVariants = {
 export default function BuyerTips() {
   return (
     <section className="py-12 min-h-[600px] px-4 md:px-10 lg:px-20 bg-white">
-      <motion.h2
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="text-4xl text-gray-800 mb-10 font-gliker"
-      >
-        <span className="text-primary">Smart</span> Buyer Tips
-      </motion.h2>
+      <div className="max-w-screen-2xl mx-auto">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl text-gray-800 mb-10 font-gliker"
+        >
+          <span className="text-primary">Smart</span> Buyer Tips
+        </motion.h2>
 
-      <div className="grid md:grid-cols-3 gap-6 mt-20">
-        {tips.map((tip, index) => (
-          <motion.div
-            key={index}
-            custom={index}
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className=" p-6 rounded-xl hover:shadow-lg transition"
-          >
-            <img className="w-72" src={tip.img} alt={tip.title} />
-            <h3 className="text-xl font-semibold mb-2">{tip.title}</h3>
-            <p className="text-gray-600 text-sm">{tip.desc}</p>
-          </motion.div>
-        ))}
+        <div className="grid md:grid-cols-3 gap-6 mt-20">
+          {tips.map((tip, index) => (
+            <motion.div
+              key={index}
+              custom={index}
+              variants={itemVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className=" p-6 rounded-xl hover:shadow-lg transition"
+            >
+              <img className="w-72" src={tip.img} alt={tip.title} />
+              <h3 className="text-xl font-semibold mb-2">{tip.title}</h3>
+              <p className="text-gray-600 text-sm">{tip.desc}</p>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

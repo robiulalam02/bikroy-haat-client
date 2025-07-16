@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { uploadImageToImgBB } from '../../API/utils';
 import Spinner from '../Loaders/Spinner';
 import useAxiosPublic from '../../Hooks/useAxiosPublic';
-import toast from 'react-hot-toast';
 
 export default function UpdateAdModal({ isOpen, closeModal, adData, onUpdate, refetch }) {
 

@@ -1,11 +1,11 @@
 import React from 'react'
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import { uploadImageToImgBB } from '../../../API/utils';
 import Spinner from '../../../Components/Loaders/Spinner';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import useAuth from '../../../Hooks/useAuth'
+import { toast } from 'react-toastify';
 
 const AddAdvertisement = () => {
 

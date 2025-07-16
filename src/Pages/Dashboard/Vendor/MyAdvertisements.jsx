@@ -5,9 +5,9 @@ import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import UpdateAdModal from '../../../Components/Modals/UpdateAdModal';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
-import toast from 'react-hot-toast';
 import Loading from '../../../Components/Loaders/Loading';
 import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 
 const MyAdvertisements = () => {
     const { profile } = useAuth();

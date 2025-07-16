@@ -9,7 +9,7 @@ import { uploadImageToImgBB } from '../../API/utils';
 import axios from 'axios';
 import Spinner from '../../Components/Loaders/Spinner';
 import { VscEye, VscEyeClosed } from 'react-icons/vsc';
-import toast from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 const Register = () => {
 

@@ -3,7 +3,7 @@ import { AuthContext } from './AuthContext'
 import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { auth } from '../Firebase/firebase.init';
 import useAxiosPublic from '../Hooks/useAxiosPublic';
-import toast from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 const provider = new GoogleAuthProvider();
 
@@ -67,7 +67,8 @@ const AuthProvider = ({ children }) => {
         updateUserProfile,
         userSignOut,
         profile,
-        loading
+        loading,
+        setLoading
     }
 
     return (
