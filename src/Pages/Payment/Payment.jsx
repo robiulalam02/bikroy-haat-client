@@ -12,7 +12,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PAYMENT_SECRET);
 const Payment = () => {
     const { id } = useParams();
     const location = useLocation();
-    const { totalPrice } = location.state || {};
+    const { totalPrice, quantity } = location.state || {};
 
     const axiosSecure = useAxiosSecure();
 
@@ -24,11 +24,13 @@ const Payment = () => {
         }
     })
 
+    console.log(quantity)
+
     return (
         <div className='max-w-screen-xl mx-auto flex items-center'>
             <div className='w-6/12'>
                 <Elements stripe={stripePromise} >
-                    <CheckoutForm price={totalPrice} product={product} />
+                    <CheckoutForm price={totalPrice} quantity={quantity} product={product} />
                 </Elements>
             </div>
             <div class="p-6 border bg-base-100 border-gray-200 rounded-3xl w-md group transition-all duration-500 hover:border-primary ">

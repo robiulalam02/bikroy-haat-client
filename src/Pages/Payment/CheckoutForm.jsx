@@ -7,6 +7,7 @@ import useAuth from '../../Hooks/useAuth';
 import Spinner from '../../Components/Loaders/Spinner';
 import Swal from 'sweetalert2';
 import { IoMdCheckboxOutline } from "react-icons/io";
+import { useNavigate } from 'react-router';
 
 
 const inputStyle = {
@@ -24,7 +25,7 @@ const inputStyle = {
     },
 };
 
-const CheckoutForm = ({ price: amount, product }) => {
+const CheckoutForm = ({ price: amount, product, quantity }) => {
     console.log(amount)
     const stripe = useStripe();
     const elements = useElements();
@@ -32,6 +33,7 @@ const CheckoutForm = ({ price: amount, product }) => {
     const [cardError, setCardError] = useState('');
     const { profile, setLoading: setGlobLoader } = useAuth();
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -85,8 +87,9 @@ const CheckoutForm = ({ price: amount, product }) => {
                     paymentIntentId: paymentIntent.id,
                     status: paymentIntent.status,
                     productId: product._id,
-                    productName: product.name,
+                    productName: product.itemName,
                     marketName: product.marketName,
+                    quantity: quantity,
                     billingDetails: {
                         city,
                         region,
@@ -115,7 +118,7 @@ const CheckoutForm = ({ price: amount, product }) => {
                             }
                         }).then(() => {
                             // Optional: redirect to "My Orders" page after confirmation
-                            // navigate('/dashboard/my-orders');
+                            navigate('/dashboard/my-orders');
                         });
                     } else {
                         toast.error('Something went wrong!');

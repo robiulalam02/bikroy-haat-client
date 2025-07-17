@@ -105,6 +105,7 @@ const ProductDetails = () => {
     navigate(`/payment/${id}`, {
       state: {
         totalPrice,
+        quantity
       },
     });
   };

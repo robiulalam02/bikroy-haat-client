@@ -24,6 +24,15 @@ const Dashboard = () => {
         <li>
             <NavLink to="/dashboard/my-advertisements">My Advertisement</NavLink>
         </li>
+        <li>
+            <NavLink to="/dashboard/view-price-trends">View Price Trends</NavLink>
+        </li>
+        <li>
+            <NavLink to="/dashboard/manage-watchlist">Manage Watchlist</NavLink>
+        </li>
+        <li>
+            <NavLink to="/dashboard/my-orders">My Orders</NavLink>
+        </li>
     </>
 
     return (
