@@ -207,7 +207,7 @@ const AllUsers = () => {
                                 <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Role
                                 </th>
-                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
@@ -232,11 +232,11 @@ const AllUsers = () => {
                                             {userItem.role || 'user'}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <td className="px-4 py-4 whitespace-nowrap flex justify-center text-sm font-medium">
                                         {/* Placeholder for Update Role Button */}
                                         <button
                                             onClick={() => handleUpdateRoleClick(userItem)}
-                                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition duration-200 text-xs"
+                                            className="relative z-0 h-12 rounded-full bg-blue-500 px-6 text-neutral-50 after:absolute after:left-0 after:top-0 after:-z-10 after:h-full after:w-full after:rounded-full after:bg-blue-500 hover:after:scale-x-125 hover:after:scale-y-150 hover:after:opacity-0 hover:after:transition hover:after:duration-500 flex items-center gap-2"
                                         >
                                             <LuUserCog className="text-lg" />
                                             Update Role

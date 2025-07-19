@@ -13,7 +13,7 @@ import MyAdvertisements from "../Pages/Dashboard/Vendor/MyAdvertisements";
 import ProductDetails from "../Pages/Home/All Products/ProductDetails";
 import Payment from "../Pages/Payment/Payment";
 import ManageWatchlist from "../Pages/Dashboard/User/ManageWatchlist";
-import AllProducts from "../Pages/Home/All Products/AllProducts";
+import AllProducts from "../Pages/Dashboard/Admin/AllProducts";
 import MyOrders from "../Pages/Dashboard/User/MyOrders";
 import ViewPriceTrends from "../Pages/Dashboard/User/ViewPriceTrends";
 import AllUsers from "../Pages/Dashboard/Admin/AllUsers";
@@ -98,6 +98,10 @@ export const router = createBrowserRouter([
       {
         path: 'all-users',
         Component: AllUsers
+      },
+      {
+        path: 'all-products',
+        Component: AllProducts 
       }
     ]
   }
