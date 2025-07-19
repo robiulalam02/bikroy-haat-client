@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure'
 import useAuth from '../../../Hooks/useAuth'
 import Loading from '../../../Components/Loaders/Loading'
 import { FaEdit, FaSearch } from 'react-icons/fa';
 import { LuUserCog } from "react-icons/lu";
+import Swal from 'sweetalert2';
 
 
 const AllUsers = () => {
     const { profile: user } = useAuth(); // Assuming 'user' object or 'profile' helps identify admin
     const axiosSecure = useAxiosSecure();
+    const queryClient = useQueryClient(); // Get query client for invalidation
 
     // State to manage the selected role filter: 'all', 'user', 'vendor', 'admin'
     const [filterRole, setFilterRole] = useState('all');
@@ -69,11 +71,36 @@ const AllUsers = () => {
     // For production, this should also be validated on the backend for security.
     // const isAdmin = profile?.role === 'admin';
 
-    if (isLoading || isPending) {
-        return <Loading />;
-    }
-
-    console.log(users)
+    // TanStack Mutation for updating user role
+    const updateRoleMutation = useMutation({
+        mutationFn: async ({ userId, newRole }) => {
+            // Assuming your backend update role API is PUT or PATCH /users/:id
+            const res = await axiosSecure.patch(`/users/${userId}`, { role: newRole });
+            return res.data;
+        },
+        onSuccess: () => {
+            // Invalidate the cache for 'allUsers' to refetch fresh data
+            queryClient.invalidateQueries({ queryKey: ['allUsers'] });
+            setIsModalOpen(false); // Close the modal
+            setUserToUpdate(null); // Clear the user to update
+            Swal.fire({
+                icon: 'success',
+                title: 'Role Updated!',
+                text: `User role has been successfully updated.`,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        },
+        onError: (error) => {
+            console.error('Error updating role:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: error.response?.data?.message || 'Failed to update user role.',
+                confirmButtonText: 'Ok'
+            });
+        }
+    });
 
     // Function to open the modal
     const handleUpdateRoleClick = (userItem) => {
@@ -81,12 +108,40 @@ const AllUsers = () => {
         setIsModalOpen(true);
     };
 
+    const handleRoleSelection = (newRole) => {
+        Swal.fire({
+            title: "Are you sure want to update the user role?",
+            type: "info",
+            showCancelButton: true,
+            confirmButtonText: "Confirm",
+            confirmButtonColor: "#77af29",
+            cancelButtonColor: "#EF4444",
+            reverseButtons: true,
+            focusConfirm: false,
+            focusCancel: true
+        })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    // If user confirms, proceed with the mutation
+                    updateRoleMutation.mutate({ userId: userToUpdate._id, newRole });
+                } else {
+                    // If user cancels, close the modal without updating
+                    setIsModalOpen(false);
+                    setUserToUpdate(null);
+                }
+            });
+    };
+
+    if (isLoading || isPending) {
+        return <Loading />;
+    }
+
     if (isError) {
         // Pass the error object to your ErrorPage component
         return <ErrorPage errorMessage={error?.message || "Failed to load users."} />;
     }
     return (
-        <div className='p-4 bg-white'>
+        <div className='p-4 bg-white h-full'>
             {/* Filtering Options */}
             <div className="mb-6 flex flex-wrap gap-3 justify-center">
                 <button
@@ -180,7 +235,7 @@ const AllUsers = () => {
                                     <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         {/* Placeholder for Update Role Button */}
                                         <button
-                                            onClick={handleUpdateRoleClick}
+                                            onClick={() => handleUpdateRoleClick(userItem)}
                                             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition duration-200 text-xs"
                                         >
                                             <LuUserCog className="text-lg" />
@@ -215,21 +270,26 @@ const AllUsers = () => {
                             {userToUpdate.role !== 'vendor' && (
                                 <button
                                     onClick={() => handleRoleSelection('vendor')}
-                                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 flex-1"
-                                    // disabled={updateRoleMutation.isPending}
+                                    className=" h-12 rounded-full relative bg-slate-700 text-white hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600 flex-1" // Added flex-1
+                                    disabled={updateRoleMutation.isPending}
                                 >
-                                    {/* {updateRoleMutation.isPending ? 'Updating...' : 'Make Vendor'} */}
-                                    Make Vendor                                    
+                                    <div className="absolute inset-x-0 h-px w-1/2 mx-auto -top-px shadow-2xl bg-gradient-to-r from-transparent via-teal-500 to-transparent" />
+                                    <span className="relative z-20">
+                                        {updateRoleMutation.isPending ? 'Updating...' : 'Make Vendor'}
+                                    </span>
                                 </button>
                             )}
+
                             {userToUpdate.role !== 'admin' && ( // Don't show "Make Admin" if already admin
                                 <button
                                     onClick={() => handleRoleSelection('admin')}
-                                    className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 flex-1"
-                                    // disabled={updateRoleMutation.isPending}
+                                    className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 flex-1" // Added flex-1 for consistent sizing
+                                    disabled={updateRoleMutation.isPending}
                                 >
-                                    {/* {updateRoleMutation.isPending ? 'Updating...' : 'Make Admin'} */}
-                                    Make Admin
+                                    <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                                    <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-3 py-1 font-medium text-white backdrop-blur-3xl">
+                                        {updateRoleMutation.isPending ? 'Updating...' : 'Make Admin'}
+                                    </span>
                                 </button>
                             )}
                         </div>
@@ -238,7 +298,7 @@ const AllUsers = () => {
                                 setIsModalOpen(false);
                                 setUserToUpdate(null);
                             }}
-                            className="mt-6 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg transition duration-200"
+                            className="mt-6 w-full border border-red-600 hover:bg-red-500 hover:text-white text-red-500 font-bold h-12 rounded-full transition duration-200"
                         >
                             Cancel
                         </button>
