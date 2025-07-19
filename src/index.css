@@ -33,3 +33,7 @@ body {
 button{
   cursor: pointer;
 }
+
+td{
+  cursor: pointer;
+}
