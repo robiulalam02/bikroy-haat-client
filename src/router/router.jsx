@@ -17,6 +17,7 @@ import AllProducts from "../Pages/Dashboard/Admin/AllProducts";
 import MyOrders from "../Pages/Dashboard/User/MyOrders";
 import ViewPriceTrends from "../Pages/Dashboard/User/ViewPriceTrends";
 import AllUsers from "../Pages/Dashboard/Admin/AllUsers";
+import AllAdvertisements from "../Pages/Dashboard/Admin/AllAdvertisements";
 
 export const router = createBrowserRouter([
   {
@@ -102,7 +103,11 @@ export const router = createBrowserRouter([
       {
         path: 'all-products',
         Component: AllProducts 
-      }
+      },
+      {
+        path: 'all-ads',
+        Component: AllAdvertisements 
+      },
     ]
   }
 ]);

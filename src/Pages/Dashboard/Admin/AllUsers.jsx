@@ -67,10 +67,6 @@ const AllUsers = () => {
         staleTime: 1000 * 60, // Data remains fresh for 1 minute
     });
 
-    // Optional: Add a check if the logged-in user is actually an admin
-    // For production, this should also be validated on the backend for security.
-    // const isAdmin = profile?.role === 'admin';
-
     // TanStack Mutation for updating user role
     const updateRoleMutation = useMutation({
         mutationFn: async ({ userId, newRole }) => {

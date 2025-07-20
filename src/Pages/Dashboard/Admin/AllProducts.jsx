@@ -33,7 +33,7 @@ const AllProducts = () => {
     // Mutation for updating product status (Approve/Reject)
     const updateProductStatusMutation = useMutation({
         mutationFn: async ({ productId, status, rejectionReason = null, feedback = null }) => {
-            const res = await axiosSecure.patch(`/products/${productId}/status`, { status, rejectionReason });
+            const res = await axiosSecure.patch(`/products/${productId}/status`, { status, rejectionReason, feedback });
             return res.data;
         },
         onSuccess: (data, variables) => {

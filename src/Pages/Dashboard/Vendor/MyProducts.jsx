@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     useQuery,
 } from '@tanstack/react-query'
@@ -8,12 +8,16 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from 'react-router';
 import Loading from '../../../Components/Loaders/Loading';
 import { BsInfoCircle } from "react-icons/bs";
+import { Tooltip } from 'react-tooltip';
+import ShowRejectionTextModal from '../../../Components/Modals/ShowRejectionTextModal';
 
 const MyProducts = () => {
 
     const { profile } = useAuth();
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
+    let [isOpen, setIsOpen] = useState(false);
+    let [selectedFeedback, setSelectedFeedback] = useState(null);
 
     const { isPending, isLoading, error, data: myProducts = [] } = useQuery({
         queryKey: ['myProucts'],
@@ -22,6 +26,11 @@ const MyProducts = () => {
             return res.data;
         }
     })
+
+    const openModal = (feedback) => {
+        setIsOpen(true);
+        setSelectedFeedback(feedback);
+    }
 
     console.log(myProducts);
 
@@ -87,11 +96,34 @@ const MyProducts = () => {
                                                     <span class="ml-2 mr-3 whitespace-nowrap rounded-full bg-green-100 px-2 py-0.5 text-green-800">Approved</span>
                                                 }
                                                 {
-                                                    product.status === "rejected" &&
-                                                    <div className='flex items-center'>
-                                                        <span class="ml-2 mr-3 whitespace-nowrap rounded-full bg-purple-100 px-2 py-0.5 text-purple-800">Rejected</span>
-                                                        <BsInfoCircle size={17} className='text-black hover:text-blue-500 transition' />
-                                                    </div>
+                                                    product.status === "rejected" && (
+                                                        <div className='flex items-center'>
+                                                            {/* The 'Rejected' span now directly triggers the tooltip */}
+                                                            <span
+                                                                className="ml-2 mr-3 whitespace-nowrap rounded-full bg-red-100 px-2 py-0.5 text-red-800" // Changed bg-purple to bg-red for consistency with 'rejected' status
+                                                                data-tooltip-id={`rejected-info-tooltip-${product._id}`} // Unique ID for this tooltip
+                                                                data-tooltip-html={`
+                                                                <strong class="block mb-1 text-lg">Rejection Reason:</strong>
+                                                                <p class="text-sm mb-2">${product.rejectionReason || 'N/A'}</p>
+                                                                <strong class="block mb-1 text-lg">Feedback:</strong>
+                                                                <p class="text-sm">${product.feedback || 'N/A'}</p>
+                                                                `} // HTML content for the tooltip
+                                                                data-tooltip-place="top" // Position the tooltip above the span
+                                                            >
+                                                                Rejected
+                                                            </span>
+
+                                                            <button onClick={()=>openModal(product.feedback || 'N/A')} className='text-lg text-black hover:text-blue-500 transition'>
+                                                                <BsInfoCircle />
+                                                            </button>
+
+                                                            {/* The Tooltip component itself, linked by ID */}
+                                                            <Tooltip
+                                                                id={`rejected-info-tooltip-${product._id}`}
+                                                                style={{ backgroundColor: '#333', color: '#fff', maxWidth: '300px', borderRadius: '8px', padding: '10px' }}
+                                                            />
+                                                        </div>
+                                                    )
                                                 }
                                             </td>
                                             <td class="whitespace-no-wrap hidden py-4 text-sm font-normal text-gray-600 sm:px-3 lg:table-cell">
@@ -124,10 +156,10 @@ const MyProducts = () => {
                     :
                     <div className='flex flex-col items-center justify-center h-screen gap-2'>
                         <h3>You doesn't added any products yet !!</h3>
-                        <button onClick={()=> navigate('/dashboard/add-product')} className='btn btn-primary text-white'>Add Product</button>
+                        <button onClick={() => navigate('/dashboard/add-product')} className='btn btn-primary text-white'>Add Product</button>
                     </div>
             }
-
+            <ShowRejectionTextModal setIsOpen={setIsOpen} selectedFeedback={selectedFeedback} isOpen={isOpen} />
         </div>
     )
 }
