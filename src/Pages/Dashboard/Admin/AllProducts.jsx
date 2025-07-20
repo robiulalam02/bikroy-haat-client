@@ -1,12 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react'
 import useAuth from '../../../Hooks/useAuth';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import { MdDone, MdClose, MdEdit, MdDelete } from 'react-icons/md'; // Icons for actions
+import { useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 const AllProducts = () => {
     const { profile: user } = useAuth();
     const axiosSecure = useAxiosSecure();
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const {
         isPending,
@@ -16,16 +21,148 @@ const AllProducts = () => {
         data: products = [],
         refetch
     } = useQuery({
-        queryKey: ['allProducts'], // Add filterStatus here if you implement it later
+        queryKey: ['allProducts'],
         queryFn: async () => {
-            // let url = '/products';
-            // if (filterStatus !== 'all') { url += `?status=${filterStatus}`; }
             const res = await axiosSecure.get('/all-products');
             return res.data;
         },
-        enabled: !!user, // Ensure user is logged in
-        staleTime: 1000 * 60, // 1 minute stale time
+        enabled: !!user,
+        staleTime: 1000 * 60,
     });
+
+    // Mutation for updating product status (Approve/Reject)
+    const updateProductStatusMutation = useMutation({
+        mutationFn: async ({ productId, status, rejectionReason = null, feedback = null }) => {
+            const res = await axiosSecure.patch(`/products/${productId}/status`, { status, rejectionReason });
+            return res.data;
+        },
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['allProducts'] }); // Refetch all products
+            toast.success('product status updated successfully')
+        },
+        onError: (error) => {
+            console.error('Error updating product status:', error);
+            toast.error(error.response?.data?.message || 'Failed to update product status.')
+        }
+    });
+
+    // Mutation for deleting a product
+    const deleteProductMutation = useMutation({
+        mutationFn: async (productId) => {
+            const res = await axiosSecure.delete(`/products/${productId}`);
+            return res.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['allProducts'] }); // Refetch all products
+            toast.success('product deleted successfully')
+        },
+        onError: (error) => {
+            console.error('Error deleting product:', error);
+            toast.error(error.response?.data?.message || 'Failed to delete product.')
+        }
+    });
+
+    // Handler for "Approve" action
+    const handleApproveProduct = (productId) => {
+        Swal.fire({
+            title: 'Approve Product?',
+            text: `Are you sure you want to approve this product?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745', // Green for Approve
+            cancelButtonColor: '#6B7280', // Neutral gray for Cancel
+            confirmButtonText: 'Yes, Approve!',
+            cancelButtonText: 'No, Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                updateProductStatusMutation.mutate({ productId, status: 'approved' });
+            }
+        });
+    };
+
+    // Updated Handler for "Reject" action with two input fields and improved styling
+    const handleRejectProduct = (productId) => {
+        Swal.fire({
+            title: 'Reject Product',
+            html: `
+                <div class="flex flex-col gap-4 p-4 -mx-4">
+                    <div class="text-left">
+                        <label for="swal-input-reason" class="text-gray-700 text-sm font-semibold mb-1 block">Rejection Reason <span class="text-red-500">*</span></label>
+                        <input
+                            type="text" // <--- Changed from textarea to input type="text"
+                            id="swal-input-reason"
+                            class="
+                                
+                                w-full p-3 border border-gray-300 rounded-md
+                                text-base text-gray-800
+                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                transition duration-150 ease-in-out
+                            "
+                            placeholder="e.g., Low quality image, Incomplete description, Prohibited item"
+                        />
+                    </div>
+                    <div class="text-left">
+                        <label for="swal-input-feedback" class="text-gray-700 text-sm font-semibold mb-1 block">Additional Feedback</label>
+                        <input
+                            type="text" // <--- Changed from textarea to input type="text"
+                            id="swal-input-feedback"
+                            class="
+                                
+                                w-full p-3 border border-gray-300 rounded-md
+                                text-base text-gray-800
+                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                transition duration-150 ease-in-out
+                            "
+                            placeholder="e.g., Suggest adding more details about product dimensions."
+                        />
+                    </div>
+                </div>
+            `,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545', // Red for Reject
+            cancelButtonColor: '#6B7280', // Neutral gray for Cancel
+            confirmButtonText: 'Reject Product',
+            cancelButtonText: 'Cancel',
+            focusConfirm: false,
+            preConfirm: () => {
+                const reasonInput = Swal.getPopup().querySelector('#swal-input-reason');
+                const feedbackInput = Swal.getPopup().querySelector('#swal-input-feedback');
+
+                const rejectionReason = reasonInput.value.trim();
+                const feedback = feedbackInput.value.trim();
+
+                if (!rejectionReason) {
+                    Swal.showValidationMessage('Rejection Reason is required!');
+                    return false;
+                }
+
+                return { rejectionReason, feedback };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { rejectionReason, feedback } = result.value;
+                updateProductStatusMutation.mutate({ productId, status: 'rejected', rejectionReason, feedback });
+            }
+        });
+    };
+
+
+    const handleDeleteProduct = (productId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6B7280', // Neutral gray for cancel
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteProductMutation.mutate(productId);
+            }
+        });
+    };
 
     console.log(products)
     return (
@@ -101,18 +238,18 @@ const AllProducts = () => {
                                             <div className="flex items-center gap-2">
                                                 {/* Approve/Reject Button */}
                                                 <button
-                                                    // onClick={() => handleApproveReject(product._id, product.status)}
-                                                    className="bg-green-400 py-1 px-3 rounded-full text-black font-semibold"
+                                                    onClick={() => handleApproveProduct(product._id, product.status)}
+                                                    className="bg-green-500 py-1 px-3 rounded-full text-gray-50 font-semibold text-xs hover:bg-green-400 transition"
                                                     title={product.status === 'approved' ? 'Mark as Pending' : 'Approve Product'}
-                                                // disabled={updateProductStatusMutation.isPending}
+                                                    disabled={updateProductStatusMutation.isPending}
                                                 >
                                                     approve
                                                 </button>
                                                 <button
-                                                    // onClick={() => handleApproveReject(product._id, product.status)}
-                                                    className="bg-red-500 py-1 px-3 rounded-full text-white font-semibold"
+                                                    onClick={() => handleRejectProduct(product._id, product.status)}
+                                                    className={`bg-red-500 py-1 px-3 rounded-full text-white font-semibold text-xs hover:bg-red-400 transition ${product.status === 'rejected' && 'cursor-not-allowed'}`}
                                                     title={product.status === 'approved' ? 'Mark as Pending' : 'Approve Product'}
-                                                // disabled={updateProductStatusMutation.isPending}
+                                                    disabled={updateProductStatusMutation.isPending || product.status === 'rejected'}
                                                 >
                                                     reject
                                                 </button>
@@ -121,7 +258,7 @@ const AllProducts = () => {
                                             <div className="flex items-center gap-2">
                                                 {/* Update Button */}
                                                 <button
-                                                    // onClick={() => handleUpdateProduct(product._id)}
+                                                    onClick={() => navigate(`/dashboard/update-product/${product._id}`)}
                                                     className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-200"
                                                     title="Update Product Info"
                                                 >
@@ -130,10 +267,10 @@ const AllProducts = () => {
 
                                                 {/* Delete Button */}
                                                 <button
-                                                    // onClick={() => handleDeleteProduct(product._id)}
+                                                    onClick={() => handleDeleteProduct(product._id)}
                                                     className="p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition duration-200"
                                                     title="Delete Product"
-                                                // disabled={deleteProductMutation.isPending}
+                                                    disabled={deleteProductMutation.isPending}
                                                 >
                                                     <MdDelete className="text-lg" />
                                                 </button>

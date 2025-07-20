@@ -7,7 +7,7 @@ import { Outlet, useNavigate } from 'react-router'
 const Authentication = () => {
   const navigate = useNavigate();
   return (
-    <div className='flex items-center'>
+    <div className='flex items-center bg-white'>
       <div className='w-7/12 flex flex-col justify-between h-full p-4'>
         <Logo />
         <Outlet />

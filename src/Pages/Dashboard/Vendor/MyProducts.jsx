@@ -7,6 +7,7 @@ import useAuth from '../../../Hooks/useAuth'
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from 'react-router';
 import Loading from '../../../Components/Loaders/Loading';
+import { BsInfoCircle } from "react-icons/bs";
 
 const MyProducts = () => {
 
@@ -87,7 +88,10 @@ const MyProducts = () => {
                                                 }
                                                 {
                                                     product.status === "rejected" &&
-                                                    <span class="ml-2 mr-3 whitespace-nowrap rounded-full bg-purple-100 px-2 py-0.5 text-purple-800">Rejected</span>
+                                                    <div className='flex items-center'>
+                                                        <span class="ml-2 mr-3 whitespace-nowrap rounded-full bg-purple-100 px-2 py-0.5 text-purple-800">Rejected</span>
+                                                        <BsInfoCircle size={17} className='text-black hover:text-blue-500 transition' />
+                                                    </div>
                                                 }
                                             </td>
                                             <td class="whitespace-no-wrap hidden py-4 text-sm font-normal text-gray-600 sm:px-3 lg:table-cell">
