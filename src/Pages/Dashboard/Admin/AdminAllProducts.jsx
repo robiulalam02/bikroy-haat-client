@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
-const AllProducts = () => {
+const AdminAllProducts = () => {
     const { profile: user } = useAuth();
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
@@ -287,4 +287,4 @@ const AllProducts = () => {
     )
 }
 
-export default AllProducts
+export default AdminAllProducts

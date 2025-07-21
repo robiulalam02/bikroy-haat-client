@@ -5,43 +5,65 @@ import Navbar from '../Components/Dashboard/Navbar'
 import Footer from '../Components/Dashboard/Footer'
 import Loading from '../Components/Loaders/Loading'
 import useAuth from '../Hooks/useAuth'
+import useUserRole from '../Hooks/useUserRole'
 
 const Dashboard = () => {
+
+    const { isVendor, isUser, isAdmin, isLoading } = useUserRole();
+    console.log(isVendor)
 
     const links = <>
         <li>
             <NavLink to="/dashboard">Home</NavLink>
         </li>
-        <li>
-            <NavLink to="/dashboard/add-product">Add Product</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/my-products">My Product</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/add-advertisements">Add Advertisement</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/my-advertisements">My Advertisement</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/view-price-trends">View Price Trends</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/manage-watchlist">Manage Watchlist</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/my-orders">My Orders</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/all-users">All Users</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/all-products">All Products</NavLink>
-        </li>
-        <li>
-            <NavLink to="/dashboard/all-ads">All Advertisements</NavLink>
-        </li>
+        {
+            isVendor && !isLoading &&
+            <>
+                <li>
+                    <NavLink to="/dashboard/add-product">Add Product</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/dashboard/my-products">My Product</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/dashboard/add-advertisements">Add Advertisement</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/dashboard/my-advertisements">My Advertisement</NavLink>
+                </li>
+            </>
+        }
+        {
+            isUser && !isLoading &&
+            <>
+                <li>
+                    <NavLink to="/dashboard/view-price-trends">View Price Trends</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/dashboard/manage-watchlist">Manage Watchlist</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/dashboard/my-orders">My Orders</NavLink>
+                </li>
+            </>
+        }
+        {
+            isAdmin && !isLoading &&
+            <>
+                <li>
+                    <NavLink to="/dashboard/all-users">All Users</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/dashboard/all-products">All Products</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/dashboard/all-ads">All Advertisements</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/dashboard/all-orders">All Orders</NavLink>
+                </li>
+            </>
+        }
     </>
 
     return (

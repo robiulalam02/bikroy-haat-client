@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import useAuth from '../../../Hooks/useAuth'
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Controller  } from 'react-hook-form';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { uploadImageToImgBB } from '../../../API/utils';
@@ -38,13 +38,26 @@ const AddProduct = () => {
         handleSubmit,
         reset,
         setValue,
+        control,
         formState: { errors },
-    } = useForm();
+    } = useForm({
+        defaultValues: {
+            prices: [
+                { date: '', price: '' },
+                { date: '', price: '' },
+                { date: '', price: '' }
+            ]
+        }
+    });
+
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'prices',
+    });
 
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     const onSubmit = async (data) => {
-        const today = new Date().toISOString().split("T")[0];
         const product = {
             vendorEmail: profile?.email,
             vendorName: profile?.displayName,
@@ -53,20 +66,17 @@ const AddProduct = () => {
             marketDescription: data.marketDescription,
             itemName: data.itemName,
             status: "pending",
-            image: productImage, // handle imgbb upload separately
+            image: productImage,
             pricePerUnit: data.pricePerUnit,
-            prices: [{ date: today, price: parseFloat(data.pricePerUnit) }],
+            prices: data.prices.map(p => ({
+                date: p.date,
+                price: parseFloat(p.price)
+            })),
             itemDescription: data.itemDescription || "",
         };
 
-        console.log("Submitted Product:", product);
-
-        // insert product to DB
         try {
             const res = await axiosPublic.post("/products", product);
-
-            console.log(res.data)
-
             if (res.data.insertedId) {
                 toast.success("Product submitted successfully!");
                 reset();
@@ -74,7 +84,7 @@ const AddProduct = () => {
                 toast.error("Something went wrong!");
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
@@ -184,6 +194,71 @@ const AddProduct = () => {
                             className="w-full border-b border-gray-300 focus:outline-none py-2"
                         ></textarea>
                     </div>
+
+                    <div>
+                        <label className="block mb-2 text-sm font-medium">Previous Prices (At least 3 entries)</label>
+
+                        <div className="space-y-4">
+                            {fields.map((field, index) => (
+                                <div
+                                    key={field.id}
+                                    className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center border border-gray-200 p-4 rounded-lg"
+                                >
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">Date</label>
+                                        <Controller
+                                            control={control}
+                                            name={`prices.${index}.date`}
+                                            rules={{ required: true }}
+                                            render={({ field }) => (
+                                                <DatePicker
+                                                    selected={field.value ? new Date(field.value) : null}
+                                                    onChange={(date) => field.onChange(date)}
+                                                    dateFormat="yyyy-MM-dd"
+                                                    placeholderText="Select date"
+                                                    className="w-full border-b border-gray-300 focus:outline-none py-2"
+                                                />
+                                            )}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">Price (৳)</label>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="e.g. 35"
+                                            {...register(`prices.${index}.price`, { required: true })}
+                                            className="w-full border-b border-gray-300 focus:outline-none py-2"
+                                        />
+                                    </div>
+
+                                    {index > 2 && (
+                                        <div className="sm:col-span-2 text-right">
+                                            <button
+                                                type="button"
+                                                onClick={() => remove(index)}
+                                                className="text-red-500 text-sm hover:underline"
+                                            >
+                                                Remove Entry
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="mt-4">
+                            <button
+                                type="button"
+                                onClick={() => append({ date: '', price: '' })}
+                                className="text-blue-600 text-sm font-medium hover:underline"
+                            >
+                                + Add Another Price Entry
+                            </button>
+                        </div>
+                    </div>
+
+
 
                     {/* Submit */}
                     <button

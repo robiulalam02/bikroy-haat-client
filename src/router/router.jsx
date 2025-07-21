@@ -13,11 +13,17 @@ import MyAdvertisements from "../Pages/Dashboard/Vendor/MyAdvertisements";
 import ProductDetails from "../Pages/Home/All Products/ProductDetails";
 import Payment from "../Pages/Payment/Payment";
 import ManageWatchlist from "../Pages/Dashboard/User/ManageWatchlist";
-import AllProducts from "../Pages/Dashboard/Admin/AllProducts";
+import AdminAllProducts from "../Pages/Dashboard/Admin/AdminAllProducts";
 import MyOrders from "../Pages/Dashboard/User/MyOrders";
 import ViewPriceTrends from "../Pages/Dashboard/User/ViewPriceTrends";
 import AllUsers from "../Pages/Dashboard/Admin/AllUsers";
 import AllAdvertisements from "../Pages/Dashboard/Admin/AllAdvertisements";
+import AllOrders from "../Pages/Dashboard/Admin/AllOrders";
+import PrivateRoute from "../routes/PrivateRoute";
+import UnauthorizedPage from "../Components/unauthorized/UnauthorizedPage";
+import AdminRoute from "../routes/AdminRoute";
+import VendorRoute from "../routes/VendorRoute";
+import AllProducts from "../Pages/Home/All Products/AllProducts";
 
 export const router = createBrowserRouter([
   {
@@ -34,11 +40,17 @@ export const router = createBrowserRouter([
       },
       {
         path: '/product-details/:id',
-        Component: ProductDetails
+        element: <PrivateRoute>
+          <ProductDetails />
+        </PrivateRoute>
       },
       {
         path: '/payment/:id',
         Component: Payment
+      },
+      {
+        path: '/unauthorized',
+        Component: UnauthorizedPage
       }
     ]
   },
@@ -66,47 +78,89 @@ export const router = createBrowserRouter([
       },
       {
         path: 'add-product',
-        Component: AddProduct
+        element: <PrivateRoute>
+          <VendorRoute>
+            <AddProduct />
+          </VendorRoute>
+        </PrivateRoute>
       },
       {
         path: 'my-products',
-        Component: MyProducts
+        element: <PrivateRoute>
+          <VendorRoute>
+            <MyProducts />
+          </VendorRoute>
+        </PrivateRoute>
       },
       {
         path: 'update-product/:id',
-        Component: UpdateProduct
+        element: <PrivateRoute>
+          <VendorRoute>
+            <UpdateProduct />
+          </VendorRoute>
+        </PrivateRoute>
       },
       {
         path: 'add-advertisements',
-        Component: AddAdvertisement
+        element: <PrivateRoute>
+          <VendorRoute>
+            <AddAdvertisement />
+          </VendorRoute>
+        </PrivateRoute>
       },
       {
         path: 'my-advertisements',
-        Component: MyAdvertisements
+        element: <PrivateRoute>
+          <VendorRoute>
+            <MyAdvertisements />
+          </VendorRoute>
+        </PrivateRoute>
       },
       {
         path: 'view-price-trends',
-        Component: ViewPriceTrends
+        element: <PrivateRoute>
+          <ViewPriceTrends />
+        </PrivateRoute>
       },
       {
         path: 'manage-watchlist',
-        Component: ManageWatchlist
+        element: <PrivateRoute>
+          <ManageWatchlist />
+        </PrivateRoute>
       },
       {
         path: 'my-orders',
-        Component: MyOrders
+        element: <PrivateRoute>
+          <MyOrders />
+        </PrivateRoute>
       },
       {
         path: 'all-users',
-        Component: AllUsers
+        element: <PrivateRoute>
+          <AdminRoute>
+            <AllUsers />
+          </AdminRoute>
+        </PrivateRoute>
       },
       {
         path: 'all-products',
-        Component: AllProducts 
+        Component: AdminAllProducts
       },
       {
         path: 'all-ads',
-        Component: AllAdvertisements 
+        element: <PrivateRoute>
+          <AdminRoute>
+            <AllAdvertisements />
+          </AdminRoute>
+        </PrivateRoute>
+      },
+      {
+        path: 'all-orders',
+        element: <PrivateRoute>
+          <AdminRoute>
+            <AllOrders />
+          </AdminRoute>
+        </PrivateRoute>
       },
     ]
   }

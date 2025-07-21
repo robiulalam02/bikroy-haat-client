@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import {
+    useMutation,
     useQuery,
+    useQueryClient,
 } from '@tanstack/react-query'
 import useAxiosSecure from '../../../Hooks/useAxiosSecure'
 import useAuth from '../../../Hooks/useAuth'
@@ -10,22 +12,57 @@ import Loading from '../../../Components/Loaders/Loading';
 import { BsInfoCircle } from "react-icons/bs";
 import { Tooltip } from 'react-tooltip';
 import ShowRejectionTextModal from '../../../Components/Modals/ShowRejectionTextModal';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 const MyProducts = () => {
 
     const { profile } = useAuth();
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     let [isOpen, setIsOpen] = useState(false);
     let [selectedFeedback, setSelectedFeedback] = useState(null);
 
     const { isPending, isLoading, error, data: myProducts = [] } = useQuery({
         queryKey: ['myProucts'],
         queryFn: async () => {
-            const res = await axiosSecure.get(`/products?email=${profile?.email}`);
+            const res = await axiosSecure.get(`/products/vendor?email=${profile?.email}`);
             return res.data;
         }
-    })
+    });
+
+    // Mutation for deleting a product
+    const deleteProductMutation = useMutation({
+        mutationFn: async (productId) => {
+            const res = await axiosSecure.delete(`/products/${productId}`);
+            return res.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['myProucts'] }); // Refetch all products
+            toast.success('product deleted successfully')
+        },
+        onError: (error) => {
+            console.error('Error deleting product:', error);
+            toast.error(error.response?.data?.message || 'Failed to delete product.')
+        }
+    });
+
+    const handleDeleteProduct = (productId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6B7280', // Neutral gray for cancel
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteProductMutation.mutate(productId);
+            }
+        });
+    };
 
     const openModal = (feedback) => {
         setIsOpen(true);
@@ -113,7 +150,7 @@ const MyProducts = () => {
                                                                 Rejected
                                                             </span>
 
-                                                            <button onClick={()=>openModal(product.feedback || 'N/A')} className='text-lg text-black hover:text-blue-500 transition'>
+                                                            <button onClick={() => openModal(product.feedback || 'N/A')} className='text-lg text-black hover:text-blue-500 transition'>
                                                                 <BsInfoCircle />
                                                             </button>
 
@@ -139,7 +176,7 @@ const MyProducts = () => {
 
                                                     {/* Delete Button */}
                                                     <button
-                                                        // onClick={onDelete}
+                                                        onClick={() => handleDeleteProduct(product._id)}
                                                         className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-full shadow-md hover:bg-red-700 transition duration-200 text-xs"
                                                     >
                                                         <FaTrash className="text-sm" />

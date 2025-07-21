@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 const Register = () => {
 
   const navigate = useNavigate();
-  const { userRegister, googleSignIn } = useContext(AuthContext);
+  const { userRegister, googleSignIn, updateUserProfile } = useContext(AuthContext);
   const axiosPublic = useAxiosPublic();
   const [imgLoading, setImgLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -30,6 +30,7 @@ const Register = () => {
       const imageURL = res.data.data.display_url
       if (imageURL) {
         setProfilePhoto(imageURL)
+        console.log(imageURL)
       }
     } catch {
       setImgLoading(false)
@@ -63,6 +64,7 @@ const Register = () => {
       setLoading(true);
       const firebasePromise = await userRegister(email, password)
       if (firebasePromise.user) {
+        updateUserProfile(name, profilePhoto)
         // insert user data to DB
         const userPromise = await axios.post('http://localhost:3000/users', userData)
 
@@ -182,19 +184,21 @@ const Register = () => {
           {/* Photo Upload */}
           <div>
             <label className="block text-sm text-gray-600 mb-1">Upload Photo</label>
-            <input
-              type="file"
-              name="photo"
-              accept="image/*"
-              onChange={(e) => {
-                handleUploadPhoto(e.target.files[0])
-              }}
-              className="w-full text-sm text-gray-700 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-primary file:text-white hover:file:bg-primary/90"
-            />
-            {
-              imgLoading &&
-              <Spinner />
-            }
+            <div className='flex items-center justify-between'>
+              <input
+                type="file"
+                name="photo"
+                accept="image/*"
+                onChange={(e) => {
+                  handleUploadPhoto(e.target.files[0])
+                }}
+                className="w-full text-sm text-gray-700 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-primary file:text-white hover:file:bg-primary/90"
+              />
+              {
+                imgLoading &&
+                <Spinner />
+              }
+            </div>
           </div>
 
           {/* Password */}
