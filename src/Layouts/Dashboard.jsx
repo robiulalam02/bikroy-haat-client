@@ -13,22 +13,22 @@ const Dashboard = () => {
     console.log(isVendor)
 
     const links = <>
-        <li>
+        <li className='h-14'>
             <NavLink to="/dashboard">Home</NavLink>
         </li>
         {
             isVendor && !isLoading &&
             <>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/add-product">Add Product</NavLink>
                 </li>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/my-products">My Product</NavLink>
                 </li>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/add-advertisements">Add Advertisement</NavLink>
                 </li>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/my-advertisements">My Advertisement</NavLink>
                 </li>
             </>
@@ -36,13 +36,13 @@ const Dashboard = () => {
         {
             isUser && !isLoading &&
             <>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/view-price-trends">View Price Trends</NavLink>
                 </li>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/manage-watchlist">Manage Watchlist</NavLink>
                 </li>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/my-orders">My Orders</NavLink>
                 </li>
             </>
@@ -50,16 +50,16 @@ const Dashboard = () => {
         {
             isAdmin && !isLoading &&
             <>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/all-users">All Users</NavLink>
                 </li>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/all-products">All Products</NavLink>
                 </li>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/all-ads">All Advertisements</NavLink>
                 </li>
-                <li>
+                <li className='h-14'>
                     <NavLink to="/dashboard/all-orders">All Orders</NavLink>
                 </li>
             </>
@@ -86,7 +86,7 @@ const Dashboard = () => {
                     <div className='p-4'>
                         <Logo />
                     </div>
-                    <ul className="menu text-base-content min-h-full w-80 p-4 bg-white">
+                    <ul className="menu min-h-80 w-80 p-4 bg-white">
                         {/* Sidebar content here */}
                         {links}
                     </ul>

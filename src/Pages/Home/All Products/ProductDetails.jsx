@@ -12,6 +12,7 @@ import useAuth from '../../../Hooks/useAuth'
 import PriceComparisonChart from '../../../Components/Comparison/PriceComparisonChart';
 import Reviews from '../../../Components/Reviews/Reviews';
 import { toast } from 'react-toastify';
+import Loading from '../../../Components/Loaders/Loading';
 
 
 const ProductDetails = () => {
@@ -23,6 +24,7 @@ const ProductDetails = () => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [showMoreOrLess, setShowMoreOrLess] = useState(true);
   const navigate = useNavigate();
 
   const axiosSecure = useAxiosSecure();
@@ -36,6 +38,8 @@ const ProductDetails = () => {
     },
     enabled: !!id,
   });
+
+  // console.log(product?.marketDescription.length)
 
   const totalPrice = parseFloat(product?.pricePerUnit || 0) * quantity;
   console.log(totalPrice)
@@ -134,6 +138,10 @@ const ProductDetails = () => {
     }
   }
 
+  if (productLoading) {
+    return <Loading />
+  }
+
   return (
     <div className='max-w-screen-lg mx-auto'>
       <div className=' bg-white mt-10 flex justify-between gap-5 p-4'>
@@ -151,7 +159,17 @@ const ProductDetails = () => {
 
           <div className='pb-3 border-b border-gray-200 space-y-1.5 mt-3'>
             <h2 className='font-semibold text-lg'>Market: <span className='font-medium'>{product?.marketName}</span></h2>
-            <p className='ext-gray-600'>{product?.marketDescription}</p>
+            <p className='ext-gray-600'>{showMoreOrLess ? product?.marketDescription.slice(0, 200) : product?.marketDescription}</p>
+            {
+              product?.marketDescription?.length >= 200 &&
+              <button onClick={() => setShowMoreOrLess(!showMoreOrLess)} className='text-sm text-primary hover:text-primary/90'>
+                {
+                  showMoreOrLess ?
+                    'show more' :
+                    'show less'
+                }
+              </button>
+            }
           </div>
 
           {/* ----- */}
@@ -240,7 +258,10 @@ const ProductDetails = () => {
 
         {
           reviews?.length > 0 ?
-            <Reviews setShowAllReviews={setShowAllReviews} showAllReviews={showAllReviews} reviewsData={reviewsData} />
+            reviewLoading ?
+              <Loading />
+              :
+              <Reviews setShowAllReviews={setShowAllReviews} showAllReviews={showAllReviews} reviewsData={reviewsData} />
             :
             <div className='h-40 flex justify-center items-center'>
               <p className='text-error text-center'>currently there are no reviews available for this product</p>

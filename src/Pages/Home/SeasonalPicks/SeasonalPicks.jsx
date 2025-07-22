@@ -4,25 +4,25 @@ const seasonalItems = [
   {
     name: "Pumpkin",
     desc: "Perfect for curries this rainy season. Fresh and sweet.",
-    image: "/images/pumpkin.jpg",
+    image: "/pimpkin.jpg",
     season: "Rainy Season",
   },
   {
     name: "Green Chili",
     desc: "Abundant this month. Buy fresh to save more.",
-    image: "/images/chili.jpg",
+    image: "/green-chilli.jpg",
     season: "All Season",
   },
   {
     name: "Spinach",
     desc: "Best for soups and stir fry. Nutritious & affordable now.",
-    image: "/images/spinach.jpg",
+    image: "/spinach.jpg",
     season: "Monsoon",
   },
   {
     name: "Carrot",
     desc: "Freshly harvested — great for salads and juices.",
-    image: "/images/carrot.jpg",
+    image: "/public/carror-farm.jpg",
     season: "Winter Special",
   },
 ];
@@ -58,7 +58,7 @@ export default function SeasonalPicks() {
             whileInView="visible"
             variants={cardVariants}
             viewport={{ once: true }}
-            className="bg-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition"
+            className="bg-gray-50 rounded-xl overflow-hidden shadow-md flex flex-col justify-between hover:shadow-lg transition"
           >
             <img
               src={item.image}

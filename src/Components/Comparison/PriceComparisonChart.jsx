@@ -1,31 +1,32 @@
-import { Legend } from '@headlessui/react';
+import { Legend } from '@headlessui/react'; // Legend is imported but not used, can be removed if not needed
 import React, { useEffect, useState } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  Cell,
+  Cell, // Cell is imported but not used, can be removed if not needed
   LineChart,
   Line
 } from 'recharts';
 
+// Import moment for robust date handling and formatting if not already used globally
+import moment from 'moment';
+import { BsGraphDownArrow, BsGraphUpArrow } from 'react-icons/bs';
+
+
 const PriceComparisonChart = ({ product }) => {
-  // const priceHistory = product?.prices?.map(entry => ({
-  //   date: entry.date,
-  //   price: entry.price,
-  // })) || [];
-
-  // console.log(priceHistory)
-
-  console.log(product.prices)
+  console.log("Product prices:", product.prices);
 
   const [startDate, setStartDate] = useState('');
   const [chartData, setChartData] = useState([]);
   const [initialPrice, setInitialPrice] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(null);
 
-  // Sort price history on component mount or if it changes (though mock data is static)
+  // Sort price history once on component mount for consistent date order
+  // This is crucial for correct filtering and initial/current price calculation
   useEffect(() => {
-    product?.prices?.sort((a, b) => new Date(a.date) - new Date(b.date));
-  }, []);
+    if (product?.prices) {
+      product.prices.sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+  }, [product?.prices]); // Depend on product.prices to re-sort if prop changes
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -40,34 +41,34 @@ const PriceComparisonChart = ({ product }) => {
       return;
     }
 
-    // Convert selected startDate string to a Date object for comparison
-    const selectedStartDateObj = new Date(startDate);
+    // Use moment for robust date comparison to ensure it includes the entire day
+    // This parses the date string to a moment object and sets time to start of day
+    const selectedStartDateMoment = moment(startDate).startOf('day');
 
     // Filter data to include only entries on or after the selected start date
     const filteredData = product?.prices?.filter(entry => {
-      const entryDateObj = new Date(entry.date);
-      // Compare dates, ignoring time component for consistency
-      return entryDateObj >= selectedStartDateObj;
+      // Convert each entry's date to a moment object at start of day for accurate comparison
+      const entryDateMoment = moment(entry.date).startOf('day');
+      return entryDateMoment.isSameOrAfter(selectedStartDateMoment);
     });
 
-    // If there's no data for or after the selected date
     if (filteredData.length === 0) {
       setChartData([]);
       setInitialPrice(null);
       setCurrentPrice(null);
-      alert('No price data found for the selected start date or after.');
+      alert('No price data found for the selected start date or after. Please choose an earlier date.');
       return;
     }
 
-    // Prepare data for the chart, mapping to 'name' and 'Price'
+    // Prepare data for the chart, mapping to 'name' (formatted date) and 'Price'
     const formattedChartData = filteredData.map(entry => ({
-      name: entry.date,
+      name: moment(entry.date).format('MMM D, YY'), // Format date for X-axis labels
       Price: entry.price,
     }));
 
     setChartData(formattedChartData);
 
-    // Set initial and current prices for summary display
+    // Set initial and current prices for summary display based on FILTERED data
     setInitialPrice(formattedChartData[0].Price);
     setCurrentPrice(formattedChartData[formattedChartData.length - 1].Price);
   };
@@ -115,24 +116,35 @@ const PriceComparisonChart = ({ product }) => {
               data={chartData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
-              <XAxis dataKey="name" />
+              <XAxis dataKey="name" /> {/* 'name' will be the formatted date */}
               <YAxis label={{ value: 'Price (৳)', angle: -90, position: 'insideLeft' }} />
               <Tooltip formatter={(value) => `৳${value}`} />
-              {/* <Legend /> */}
+              {/* <Legend /> */} {/* Uncomment if you want a legend, though "Price" is self-explanatory */}
               <Line type="monotone" dataKey="Price" stroke="#8884d8" activeDot={{ r: 8 }} />
             </LineChart>
           </ResponsiveContainer>
 
           {overallChange !== null && (
-            <p className="text-center text-lg font-bold mt-5 p-3 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
-              <span className="block mb-1">**Initial Price on {startDate}:** ৳{initialPrice}</span>
-              <span className="block mb-2">**Current Price (Latest):** ৳{currentPrice}</span>
-              {overallChange > 0
-                ? `Overall, the price has **increased** by ৳${overallChange}. ⬆️`
-                : overallChange < 0
-                  ? `Overall, the price has **decreased** by ৳${Math.abs(overallChange)}. ⬇️`
-                  : `Overall, the price has **remained stable** since ${startDate}. ↔️`}
-            </p>
+            <div className="mt-5 p-5 rounded-lg bg-blue-50 border border-blue-200 shadow-md">
+              <div className="flex justify-between items-center mb-2 pb-2 border-b border-blue-100">
+                <p className="text-blue-800 text-lg font-semibold">Initial Price on {moment(startDate).format('MMM D, YYYY')}:</p>
+                <p className="text-blue-800 text-xl font-bold">৳{initialPrice}</p>
+              </div>
+
+              <div className="flex justify-between items-center mb-4 pb-2 border-b border-blue-100">
+                <p className="text-blue-800 text-lg font-semibold">Latest Recorded Price:</p>
+                <p className="text-blue-800 text-xl font-bold">৳{currentPrice}</p>
+              </div>
+
+              <div className="text-center flex justify-center text-xl font-bold">
+                {overallChange > 0
+                  ? <span className="text-green-700 flex items-center gap-2">Overall, the price has increased by ৳{overallChange.toFixed(2)} <BsGraphUpArrow /></span>
+                  : overallChange < 0
+                    ? <span className="text-red-700 flex items-center gap-2">Overall, the price has decreased by ৳{Math.abs(overallChange).toFixed(2)} <BsGraphDownArrow /></span>
+                    : <span className="text-gray-700">Overall, the price has remained stable within the selected period.</span>
+                }
+              </div>
+            </div>
           )}
         </div>
       ) : (
@@ -144,4 +156,4 @@ const PriceComparisonChart = ({ product }) => {
   )
 }
 
-export default PriceComparisonChart
+export default PriceComparisonChart;
