@@ -57,7 +57,7 @@ const MyAdvertisements = () => {
 
         // send delete req to server
         try {
-            const res = await axiosSecure.delete(`/advertisements/${id}`);
+            const res = await axiosSecure.delete(`/vendor/advertisements/${id}`);
 
             console.log(res.data)
 
@@ -80,19 +80,19 @@ const MyAdvertisements = () => {
                 adData={selectedAd}
                 onUpdate={handleUpdate}
             />
-            <h2 className="text-2xl font-semibold mb-6">My Advertisements</h2>
+            <h2 className="text-2xl font-extrabold text-center mb-6">My Advertisements</h2>
             {
                 myAds?.length > 0 ?
                     <div className="overflow-x-auto bg-white shadow rounded-lg p-4">
                         <table className="min-w-full table-auto text-sm text-left">
-                            <thead className="border-b bord text-gray-700 uppercase text-xs">
+                            <thead className="border-b bord text-gray-700 uppercas">
                                 <tr>
                                     <th className="px-4 py-3">#</th>
                                     <th className="px-4 py-3">Image</th>
                                     <th className="px-4 py-3">Title</th>
                                     <th className="px-4 py-3">Description</th>
                                     <th className="px-4 py-3">Status</th>
-                                    <th className="px-4 py-3">Posted At</th>
+                                    <th className="px-4 py-3 text-center">Posted At</th>
                                     <th className="px-4 py-3">Actions</th>
                                 </tr>
                             </thead>

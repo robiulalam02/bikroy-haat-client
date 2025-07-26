@@ -1,31 +1,5 @@
 import { motion } from "framer-motion";
-
-const seasonalItems = [
-  {
-    name: "Pumpkin",
-    desc: "Perfect for curries this rainy season. Fresh and sweet.",
-    image: "/pimpkin.jpg",
-    season: "Rainy Season",
-  },
-  {
-    name: "Green Chili",
-    desc: "Abundant this month. Buy fresh to save more.",
-    image: "/green-chilli.jpg",
-    season: "All Season",
-  },
-  {
-    name: "Spinach",
-    desc: "Best for soups and stir fry. Nutritious & affordable now.",
-    image: "/spinach.jpg",
-    season: "Monsoon",
-  },
-  {
-    name: "Carrot",
-    desc: "Freshly harvested — great for salads and juices.",
-    image: "/public/carror-farm.jpg",
-    season: "Winter Special",
-  },
-];
+import { useNavigate } from "react-router";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -37,46 +11,49 @@ const cardVariants = {
 };
 
 export default function SeasonalPicks() {
+  const navigate = useNavigate();
   return (
-    <section className="py-12 px-4 md:px-10 lg:px-20 min-h-[500px] bg-white">
-      <motion.h2
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="text-4xl text-center mb-10 text-gray-800 font-gliker"
-      >
-        <span className="text-primary">Seasonal</span> Picks
-      </motion.h2>
+    <div className="max-w-screen-3xl mx-auto h-[700px]">
+      <div class="z-30 relative items-center h-full justify-center overflow-auto">
+        <div class="inset-0 h-full bg-cover bg-center "
+          style={{ backgroundImage: 'url("/market-banner.jpg")' }}
+        >
+        </div>
+        <div class="absolute inset-0 z-20 flex items-center justify-center h-full w-full bg-gray-900/75"></div>
+        <div class="absolute inset-0  z-30  flex flex-col items-center justify-center max-w-screen-2xl mx-auto">
+          <div class="shadow-2xl rounded-lg w-4/5 h-96 bg-cover bg-center bg-[url(/market-banner.jpg)]">
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-screen-2xl mx-auto">
-        {seasonalItems.map((item, index) => (
-          <motion.div
-            key={index}
-            custom={index}
-            initial="hidden"
-            whileInView="visible"
-            variants={cardVariants}
-            viewport={{ once: true }}
-            className="bg-gray-50 rounded-xl overflow-hidden shadow-md flex flex-col justify-between hover:shadow-lg transition"
-          >
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-full h-36 object-cover"
-            />
-            <div className="p-5">
-              <h3 className="text-lg font-semibold text-gray-800">
-                {item.name}
-              </h3>
-              <p className="text-sm text-gray-600 my-1">{item.desc}</p>
-              <span className="text-xs px-3 py-1 inline-block rounded-full bg-green-100 text-green-700 mt-2">
-                🌿 {item.season}
-              </span>
+            <div class="grid grid-cols-12 gap-1">
+              <div class="relative my-6 px-8 col-span-12 sm:col-span-12 md:col-span-7 lg:col-span-7 xxl:col-span-7">
+                <div class="border-l-4 border-gray-400 py-20 px-5 mx-2 absolute left-0">
+                  <p class="italic text-white text-xl md:text-4xl lg:text-6xl uppercase text-center  font-semibold ">
+                    THE POWER OF LOCAL MARKETS
+                  </p>
+                </div>
+                <div class="text-gray-400 font-semibold text-xl mb-4">07</div>
+                <div class="absolute border-gray-400 border-t-4 bottom-0 py-1 px-4 w-4/5"></div>
+              </div>
+              <div class="col-span-12 sm:col-span-12 md:col-span-5 lg:col-span-5 xxl:col-span-5">
+                <div class="relative bg-primary h-full md:h-96 w-full bg-opacity-50 rounded-tr-lg rounded-br-lg">
+                  <div class="p-8">
+                    <p class="text-white text-xs md:text-sm lg:text-xl mb-4">
+                      Local markets are the heartbeat of our communities. From fresh vegetables to handcrafted goods, these markets connect people with the essence of daily life. At Bikroy Haat, we bring that vibrant marketplace online—making it easier to discover, buy, and sell fresh and affordable items near you. Whether you're a buyer looking for daily essentials or a vendor reaching out to your neighborhood, your haat is now just a click away.
+                    </p>
+                    <div class="bottom-0 absolute p-2 right-0">
+                      <button onClick={()=> navigate('/all-products')} class="opacity-75 bg-gray-100 hover:bg-primary hover:text-white text-sm font-bold py-2 px-4 rounded inline-flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>EXPLORE NOW</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </motion.div>
-        ))}
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

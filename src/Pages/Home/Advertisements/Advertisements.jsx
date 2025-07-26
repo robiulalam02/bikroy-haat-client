@@ -5,47 +5,23 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import './ads.css'
-
-const ads = [
-  {
-    id: 1,
-    title: "Special Offer: Buy 2kg Carrot, Get 1kg Free!",
-    description: "Only available this week at Karwan Bazar.",
-    image: "/Ads/ads-1.jpg",
-  },
-  {
-    id: 2,
-    title: "Fresh Fish Fridays!",
-    description: "Up to 20% off on all freshwater fish in New Market.",
-    image: "/Ads/ads-2.jpg",
-  },
-  {
-    id: 3,
-    title: "Chicken Combo Deal",
-    description: "Get amazing discounts when buying 5kg or more.",
-    image: "/Ads/ads-3.jpg",
-  },
-  {
-    id: 4,
-    title: "Chicken Combo Deal",
-    description: "Get amazing discounts when buying 5kg or more.",
-    image: "/Ads/ads-4.jpg",
-  },
-  {
-    id: 5,
-    title: "Chicken Combo Deal",
-    description: "Get amazing discounts when buying 5kg or more.",
-    image: "/Ads/ads-5.jpg",
-  },
-  {
-    id: 6,
-    title: "Chicken Combo Deal",
-    description: "Get amazing discounts when buying 5kg or more.",
-    image: "/Ads/ads-6.jpg",
-  },
-];
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Advertisements() {
+  const axiosPublic = useAxiosPublic();
+
+  const getAdvertisements = async () => {
+    const res = await axiosPublic.get('/advertisements');
+    return res.data;
+  };
+
+  const { data: ads = [], isLoading, isPending, error } = useQuery({
+    queryKey: ['advertisements'],
+    queryFn: getAdvertisements,
+  });
+
+
   return (
     <section className="bg-gray-50 py-10 px-4 md:px-10 lg:px-20 h-[500px]">
       <div className="max-w-screen-2xl mx-auto">
@@ -63,10 +39,10 @@ export default function Advertisements() {
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 3 },
           }}
-          style={{ height: '320px' }}
+          style={{ height: '320px', padding: '0 10px' }}
         >
           {ads.map((ad) => (
-            <SwiperSlide key={ad.id} style={{ height: '100%', padding: '20px 0' }}>
+            <SwiperSlide key={ad._id} style={{ height: '100%', padding: '20px 0' }}>
               <div className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300 h-full">
                 <img
                   src={ad.image}

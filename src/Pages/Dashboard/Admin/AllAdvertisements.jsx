@@ -65,9 +65,14 @@ const AllAdvertisements = () => {
         });
     };
 
+    // Loading and Error states
+    if (isLoading || isPending) {
+        return <div className="text-center py-8">Loading advertisements...</div>;
+    }
+
     return (
         <div className="p-4 md:p-8 bg-white overflow-x-auto h-full">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
+            <h1 className="text-2xl font-extrabold text-gray-800 mb-6 text-center">
                 All Advertisements
             </h1>
 

@@ -1,3 +1,32 @@
-.swiper-slide{
-height: 100%;
+.swiper-slide {
+    height: 100%;
+}
+
+/* ads.css */
+
+/* Basic styling for the advertisement card, if not already present */
+.swiper-slide>div {
+    transform: scale(0.95);
+    /* Slightly shrink inactive slides for a subtle effect */
+    transition: transform 0.3s ease-in-out;
+    /* Smooth transition for scaling */
+}
+
+/* Style for the active slide */
+.swiper-slide-active>div {
+    transform: scale(1);
+    /* Original size for the active slide */
+}
+
+/* If you want a more pronounced zoom, you can do this: */
+.swiper-slide>div {
+    transform: scale(1);
+    /* Inactive slides are smaller */
+    transition: transform 0.4s ease-in-out;
+}
+
+.swiper-slide-active>div {
+    transform: scale(1.02);
+    /* Active slide zooms in a bit */
+    /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); */
 }

@@ -91,7 +91,7 @@ const AddProduct = () => {
     return (
         <div class="flex items-center justify-center p-12">
             <div class="mx-auto w-full max-w-2xl bg-white p-10">
-                <h2 className="text-2xl font-bold mb-6 text-center">Add New Product</h2>
+                <h2 className="text-2xl font-extrabold mb-6 text-center">Add New Product</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Vendor Info (Read-only) */}
                     <div>

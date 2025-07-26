@@ -1,84 +1,107 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import useAxiosSecure from '../../../Hooks/useAxiosSecure'
-import useAuth from '../../../Hooks/useAuth'
-import Loading from '../../../Components/Loaders/Loading'
-import { FaEdit, FaSearch } from 'react-icons/fa';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import useAuth from '../../../Hooks/useAuth';
+import Loading from '../../../Components/Loaders/Loading';
+import { FaSearch } from 'react-icons/fa'; // Only FaSearch is used now
 import { LuUserCog } from "react-icons/lu";
 import Swal from 'sweetalert2';
-
+// Assuming ErrorPage component exists
+// import ErrorPage from '../../../Components/ErrorPage';
 
 const AllUsers = () => {
-    const { profile: user } = useAuth(); // Assuming 'user' object or 'profile' helps identify admin
+    const { profile: user } = useAuth();
     const axiosSecure = useAxiosSecure();
-    const queryClient = useQueryClient(); // Get query client for invalidation
+    const queryClient = useQueryClient();
 
-    // State to manage the selected role filter: 'all', 'user', 'vendor', 'admin'
     const [filterRole, setFilterRole] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
-    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(''); // State for debounced search term
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+    // Pagination States
+    const [currentPage, setCurrentPage] = useState(1);
+    // Add itemsPerPage state and initialize it
+    const [itemsPerPage, setItemsPerPage] = useState(10); // Default to 10 items per page
+    const [totalPages, setTotalPages] = useState(1); // State to store total pages from API
 
     // State for the modal
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [userToUpdate, setUserToUpdate] = useState(null); // Stores the user object whose role we want to change
+    const [userToUpdate, setUserToUpdate] = useState(null);
 
     // Debounce effect for search input
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-        }, 500); // 500ms delay
+            setCurrentPage(1); // Reset to first page on new search
+        }, 500);
 
         return () => {
             clearTimeout(handler);
         };
-    }, [searchTerm]); // Only re-run if searchTerm changes
+    }, [searchTerm]);
+
+    // Effect to reset page when filterRole or itemsPerPage changes
+    useEffect(() => {
+        setCurrentPage(1);
+        // We don't need to refetch here, useQuery's queryKey will handle it
+    }, [filterRole, itemsPerPage]); // Add itemsPerPage as a dependency here
 
     const {
         isPending,
         isLoading,
         isError,
         error,
-        data: users = [], // Data will be an array of user objects
-        refetch // To refetch data when filter changes
+        data, // data will now be the entire response object: { users, totalUsers, currentPage, totalPages }
     } = useQuery({
-        // queryKey changes when filterRole changes, triggering a re-fetch
-        queryKey: ['allUsers', filterRole, debouncedSearchTerm],
+        // queryKey changes when filterRole, debouncedSearchTerm, currentPage, or itemsPerPage change
+        queryKey: ['allUsers', filterRole, debouncedSearchTerm, currentPage, itemsPerPage], // Include itemsPerPage
         queryFn: async () => {
-            let url = '/users';
+            let url = '/admin/users';
             const queryParams = [];
 
             if (filterRole && filterRole !== 'all') {
                 queryParams.push(`role=${filterRole}`);
             }
-            if (debouncedSearchTerm) { // Use debouncedSearchTerm for API calls
+            if (debouncedSearchTerm) {
                 queryParams.push(`search=${debouncedSearchTerm}`);
             }
+            // Add pagination parameters
+            queryParams.push(`page=${currentPage}`);
+            queryParams.push(`limit=${itemsPerPage}`); // Send itemsPerPage to backend
 
             if (queryParams.length > 0) {
                 url += `?${queryParams.join('&')}`;
             }
 
-            // Assuming axiosSecure base URL points to your backend (e.g., /api)
             const res = await axiosSecure.get(url);
-            return res.data;
+            return res.data; // This will be { users, totalUsers, currentPage, totalPages }
         },
-        // Only fetch if the user is authenticated and potentially an admin (add admin check if needed)
-        enabled: !!user, // Assuming user being logged in is enough for now
-        staleTime: 1000 * 60, // Data remains fresh for 1 minute
+        enabled: !!user,
+        staleTime: 1000 * 60,
     });
 
-    // TanStack Mutation for updating user role
+    // Update totalPages state whenever new data arrives
+    useEffect(() => {
+        if (data?.totalPages) {
+            setTotalPages(data.totalPages);
+        }
+    }, [data]);
+
+    // Extract users from the data object, provide a default empty array
+    const users = data?.users || [];
+
+
+    // TanStack Mutation for updating user role (remains the same)
     const updateRoleMutation = useMutation({
         mutationFn: async ({ userId, newRole }) => {
-            // Assuming your backend update role API is PUT or PATCH /users/:id
-            const res = await axiosSecure.patch(`/users/${userId}`, { role: newRole });
+            const res = await axiosSecure.patch(`/admin/update-user-role/${userId}`, { role: newRole });
             return res.data;
         },
         onSuccess: () => {
-            // Invalidate the cache for 'allUsers' to refetch fresh data
-            queryClient.invalidateQueries({ queryKey: ['allUsers'] });
-            setIsModalOpen(false); // Close the modal
-            setUserToUpdate(null); // Clear the user to update
+            // Invalidate the cache for 'allUsers' to refetch fresh data with current pagination/filters
+            queryClient.invalidateQueries({ queryKey: ['allUsers', filterRole, debouncedSearchTerm, currentPage, itemsPerPage] });
+            setIsModalOpen(false);
+            setUserToUpdate(null);
             Swal.fire({
                 icon: 'success',
                 title: 'Role Updated!',
@@ -98,7 +121,6 @@ const AllUsers = () => {
         }
     });
 
-    // Function to open the modal
     const handleUpdateRoleClick = (userItem) => {
         setUserToUpdate(userItem);
         setIsModalOpen(true);
@@ -106,8 +128,8 @@ const AllUsers = () => {
 
     const handleRoleSelection = (newRole) => {
         Swal.fire({
-            title: "Are you sure want to update the user role?",
-            type: "info",
+            title: "Are you sure you want to update the user role?",
+            icon: "info",
             showCancelButton: true,
             confirmButtonText: "Confirm",
             confirmButtonColor: "#77af29",
@@ -118,14 +140,25 @@ const AllUsers = () => {
         })
             .then((result) => {
                 if (result.isConfirmed) {
-                    // If user confirms, proceed with the mutation
                     updateRoleMutation.mutate({ userId: userToUpdate._id, newRole });
                 } else {
-                    // If user cancels, close the modal without updating
                     setIsModalOpen(false);
                     setUserToUpdate(null);
                 }
             });
+    };
+
+    // Pagination handlers
+    const handlePageChange = (page) => {
+        if (page > 0 && page <= totalPages) { // Ensure page is within valid range
+            setCurrentPage(page);
+        }
+    };
+
+    // New handler for items per page dropdown
+    const handleItemsPerPageChange = (e) => {
+        setItemsPerPage(parseInt(e.target.value));
+        setCurrentPage(1); // Reset to first page when items per page changes
     };
 
     if (isLoading || isPending) {
@@ -133,38 +166,40 @@ const AllUsers = () => {
     }
 
     if (isError) {
-        // Pass the error object to your ErrorPage component
-        return <ErrorPage errorMessage={error?.message || "Failed to load users."} />;
+        // Ensure ErrorPage is imported or handle error display inline
+        return <div className="text-center py-8 text-red-500">Error: {error?.message || "Failed to load users."}</div>;
     }
+
     return (
         <div className='p-4 bg-white h-full'>
+            <h2 className="text-2xl font-extrabold mb-6 text-gray-800">Manage All Users</h2>
             {/* Filtering Options */}
-            <div className="mb-6 flex flex-wrap gap-3 justify-center">
+            <div className="mb-6 flex flex-wrap gap-3 items-center">
                 <button
                     onClick={() => setFilterRole('all')}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200
-            ${filterRole === 'all' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 hover:bg-primary hover:text-white'}`}
+                    ${filterRole === 'all' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 hover:bg-primary hover:text-white'}`}
                 >
                     All Roles
                 </button>
                 <button
                     onClick={() => setFilterRole('user')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-            ${filterRole === 'user' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 hover:bg-primary hover:text-white'}`}
+                    ${filterRole === 'user' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 hover:bg-primary hover:text-white'}`}
                 >
                     Users
                 </button>
                 <button
                     onClick={() => setFilterRole('vendor')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-            ${filterRole === 'vendor' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 hover:bg-primary hover:text-white'}`}
+                    ${filterRole === 'vendor' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 hover:bg-primary hover:text-white'}`}
                 >
                     Vendors
                 </button>
                 <button
                     onClick={() => setFilterRole('admin')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-            ${filterRole === 'admin' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 hover:bg-primary hover:text-white'}`}
+                    ${filterRole === 'admin' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 hover:bg-primary hover:text-white'}`}
                 >
                     Admins
                 </button>
@@ -179,12 +214,29 @@ const AllUsers = () => {
                     />
                     <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 </div>
+
+                {/* --- Items per page dropdown --- */}
+                <div className="flex items-center ml-auto">
+                    <label htmlFor="itemsPerPage" className="mr-2 text-sm text-gray-700">Show :</label>
+                    <select
+                        id="itemsPerPage"
+                        className="p-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:ring-primary focus:border-primary cursor-pointer hover:border-primary"
+                        value={itemsPerPage} // Controlled component: value is tied to state
+                        onChange={handleItemsPerPageChange} // Call handler on change
+                    >
+                        <option value="5">5 per page</option>
+                        <option value="10">10 per page</option>
+                        <option value="20">20 per page</option>
+                        <option value="50">50 per page</option>
+                    </select>
+                </div>
+                {/* --- End Items per page dropdown --- */}
             </div>
 
             {/* Users Table */}
             {users.length === 0 ? (
                 <p className="text-center text-gray-500 italic text-lg mt-8">
-                    No users found for the selected role{filterRole !== 'all' ? ` "${filterRole}"` : ''}.
+                    No users found for the selected role{filterRole !== 'all' ? ` "${filterRole}"` : ''} or search term.
                 </p>
             ) : (
                 <div className="overflow-x-auto border border-gray-200 rounded-lg">
@@ -209,10 +261,10 @@ const AllUsers = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {users.map((userItem, index) => ( // Renamed 'user' to 'userItem' to avoid conflict with useAuth 'user'
+                            {users.map((userItem, index) => (
                                 <tr key={userItem._id}>
                                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {index + 1}
+                                        {(currentPage - 1) * itemsPerPage + index + 1}
                                     </td>
                                     <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {userItem.name || 'N/A'}
@@ -222,14 +274,13 @@ const AllUsers = () => {
                                     </td>
                                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                      ${userItem.role === 'admin' ? 'bg-purple-100 text-purple-800' :
+                                            ${userItem.role === 'admin' ? 'bg-purple-100 text-purple-800' :
                                                 userItem.role === 'vendor' ? 'bg-green-100 text-green-800' :
                                                     'bg-blue-100 text-blue-800'}`}>
                                             {userItem.role || 'user'}
                                         </span>
                                     </td>
                                     <td className="px-4 py-4 whitespace-nowrap flex justify-center text-sm font-medium">
-                                        {/* Placeholder for Update Role Button */}
                                         <button
                                             onClick={() => handleUpdateRoleClick(userItem)}
                                             className="relative z-0 h-12 rounded-full bg-blue-500 px-6 text-neutral-50 after:absolute after:left-0 after:top-0 after:-z-10 after:h-full after:w-full after:rounded-full after:bg-blue-500 hover:after:scale-x-125 hover:after:scale-y-150 hover:after:opacity-0 hover:after:transition hover:after:duration-500 flex items-center gap-2"
@@ -237,13 +288,6 @@ const AllUsers = () => {
                                             <LuUserCog className="text-lg" />
                                             Update Role
                                         </button>
-                                        {/* Placeholder for Delete User Button (e.g., if needed by admin) */}
-                                        {/* <button
-                      className="text-red-600 hover:text-red-900"
-                      // onClick={() => handleDeleteUser(userItem._id)}
-                    >
-                      Delete
-                    </button> */}
                                     </td>
                                 </tr>
                             ))}
@@ -252,7 +296,37 @@ const AllUsers = () => {
                 </div>
             )}
 
-            {/* Update Role Modal */}
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center mt-6">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 mx-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Previous
+                    </button>
+                    {[...Array(totalPages).keys()].map(page => (
+                        <button
+                            key={page + 1}
+                            onClick={() => handlePageChange(page + 1)}
+                            className={`px-4 py-2 mx-1 rounded-lg ${currentPage === page + 1 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                        >
+                            {page + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 mx-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
+
+
+            {/* Update Role Modal (remains the same) */}
             {isModalOpen && userToUpdate && (
                 <div className="fixed inset-0 bg-black/40 bg-opacity-75 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-auto">
@@ -266,7 +340,7 @@ const AllUsers = () => {
                             {userToUpdate.role !== 'vendor' && (
                                 <button
                                     onClick={() => handleRoleSelection('vendor')}
-                                    className=" h-12 rounded-full relative bg-slate-700 text-white hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600 flex-1" // Added flex-1
+                                    className=" h-12 rounded-full relative bg-slate-700 text-white hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600 flex-1"
                                     disabled={updateRoleMutation.isPending}
                                 >
                                     <div className="absolute inset-x-0 h-px w-1/2 mx-auto -top-px shadow-2xl bg-gradient-to-r from-transparent via-teal-500 to-transparent" />
@@ -276,10 +350,10 @@ const AllUsers = () => {
                                 </button>
                             )}
 
-                            {userToUpdate.role !== 'admin' && ( // Don't show "Make Admin" if already admin
+                            {userToUpdate.role !== 'admin' && (
                                 <button
                                     onClick={() => handleRoleSelection('admin')}
-                                    className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 flex-1" // Added flex-1 for consistent sizing
+                                    className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 flex-1"
                                     disabled={updateRoleMutation.isPending}
                                 >
                                     <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -302,7 +376,7 @@ const AllUsers = () => {
                 </div>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default AllUsers
+export default AllUsers;

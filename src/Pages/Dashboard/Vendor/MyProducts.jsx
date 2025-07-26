@@ -77,6 +77,7 @@ const MyProducts = () => {
 
     return (
         <div className='p-4'>
+            <h1 className='text-2xl font-extrabold text-center'>My Products</h1>
             {
                 myProducts?.length > 0 ?
                     <div class="mt-6 overflow-hidden rounded-xl bg-white px-6 shadow lg:px-4">

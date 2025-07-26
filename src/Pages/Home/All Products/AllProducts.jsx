@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../../../Components/Loaders/Loading';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Tooltip } from 'react-tooltip';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { BsArrowLeftRight } from "react-icons/bs";
+import { PiEyeThin } from 'react-icons/pi';
 
 const AllProducts = () => {
   const axiosPublic = useAxiosPublic();
+  const navigate = useNavigate();
 
   // State for Sorting
   const [sortBy, setSortBy] = useState(''); // 'price' or 'date'
@@ -38,11 +41,13 @@ const AllProducts = () => {
     queryKey: ['allProducts', sortBy, sortOrder, filterStartDate, filterEndDate],
     queryFn: async () => {
       // Pass query parameters to the API call
-      const res = await axiosPublic.get(`/all-products?${queryParams.toString()}`);
+      const res = await axiosPublic.get(`/products?${queryParams.toString()}`);
       return res.data;
     },
     staleTime: 1000 * 60, // Data considered fresh for 1 minute
   });
+
+  console.log(products)
 
   // Event Handlers for UI
   const handleSortChange = (e) => {
@@ -165,7 +170,7 @@ const AllProducts = () => {
           <div className='max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4'>
             {
               products?.map(product => (
-                <div key={product._id} class="rounded-lg bg-white p-6 shadow cursor-pointer">
+                <div key={product._id} class="rounded-lg bg-white p-6 shadow">
                   <div class="h-56 w-full flex justify-center overflow-hidden">
                     <img class="w-full h-full object-cover hover:scale-105 transition duration-500" src={product.image} alt="" />
                   </div>
@@ -179,31 +184,28 @@ const AllProducts = () => {
                       <div class="flex items-center justify-end gap-1">
                         {/* Tooltips using react-tooltip */}
                         <button
+                          onClick={() => navigate(`/product-details/${product._id}`)}
                           type="button"
                           data-tooltip-id={`quick-look-tooltip-${product._id}`}
                           data-tooltip-content="Quick look"
-                          class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white"
+                          class="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
                         >
                           <span class="sr-only"> Quick look </span>
-                          <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
-                            <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                          </svg>
+                          <PiEyeThin />
                         </button>
                         <Tooltip id={`quick-look-tooltip-${product._id}`} place="top" effect="solid" />
 
                         <button
+                          onClick={() => navigate(`/product-details/${product._id}`)}
                           type="button"
-                          data-tooltip-id={`add-to-favorites-tooltip-${product._id}`}
-                          data-tooltip-content="Add to Favorites"
-                          class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                          data-tooltip-id={`add-to-comparison-tooltip-${product._id}`}
+                          data-tooltip-content="Add to comparison"
+                          class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 "
                         >
-                          <span class="sr-only"> Add to Favorites </span>
-                          <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z" />
-                          </svg>
+                          <span class="sr-only"> Add to Comparison </span>
+                          <BsArrowLeftRight />
                         </button>
-                        <Tooltip id={`add-to-favorites-tooltip-${product._id}`} place="top" effect="solid" />
+                        <Tooltip id={`add-to-comparison-tooltip-${product._id}`} place="top" effect="solid" />
                       </div>
                     </div>
 
@@ -235,7 +237,7 @@ const AllProducts = () => {
                       <p class="text-xl font-extrabold leading-tight text-gray-900">৳{parseFloat(product.pricePerUnit).toFixed(2)}</p>
 
                       {/* Using Link for navigation */}
-                      <button type="button" class="inline-flex items-center gap-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300">
+                      <button onClick={() => navigate(`/product-details/${product._id}`)} type="button" class="inline-flex items-center gap-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300">
 
                         <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
 

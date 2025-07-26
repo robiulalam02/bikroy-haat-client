@@ -5,7 +5,8 @@ import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import Loading from '../../../Components/Loaders/Loading';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TbCurrencyTaka } from "react-icons/tb";
-import { FaArrowsLeftRight, FaArrowTrendUp } from "react-icons/fa6";
+import { FaArrowsLeftRight, FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
+
 
 
 
@@ -75,7 +76,7 @@ const ViewPriceTrends = () => {
   return (
     <div className="p-4">
       <div className="font-sans p-8 max-w-6xl mx-auto bg-white rounded-lg shadow-xl">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">View Price Trends 📊</h1>
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">View Price Trends</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Left Panel: Tracked Items List */}
@@ -161,7 +162,7 @@ const ViewPriceTrends = () => {
                           {overallChange > 0
                             ? (
                               <div className='flex items-center'>
-                                <p>Overall, the price has increased by:</p>
+                                <p>Overall, the price has <span className='text-green-600 mx-1'>increased</span> by:</p>
                                 <span className="inline-flex items-center text-green-600">
                                   <TbCurrencyTaka className="text-base sm:text-lg" />{overallChange}. <FaArrowTrendUp className="ml-1 text-base sm:text-lg" />
                                 </span>
@@ -170,7 +171,7 @@ const ViewPriceTrends = () => {
                             : overallChange < 0
                               ? (
                                 <>
-                                  Overall, the price has <span className="text-red-600">decreased</span> by{' '}
+                                  Overall, the price has <span className="text-red-600 mx-1">decreased</span> by{' '}
                                   <span className="inline-flex items-center">
                                     <TbCurrencyTaka className="text-base sm:text-lg" />{Math.abs(overallChange)}. <FaArrowTrendDown className="ml-1 text-base sm:text-lg" />
                                   </span>
@@ -178,7 +179,7 @@ const ViewPriceTrends = () => {
                               )
                               : (
                                 <>
-                                  Overall, the price has <span className="text-gray-600">remained stable</span> since {chartData[0]?.name || 'N/A'}.{' '}
+                                  Overall, the price has <span className="text-gray-600 mx-1">remained stable</span> since {chartData[0]?.name || 'N/A'}.{' '}
                                   <FaArrowsLeftRight className="ml-1 text-base sm:text-lg" />
                                 </>
                               )

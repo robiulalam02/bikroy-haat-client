@@ -38,7 +38,7 @@ export default function Products() {
                 <span className="text-primary">Featured</span> Products
             </motion.h2>
 
-            <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-5 justify-center max-w-screen-2xl mx-auto">
+            <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-5 justify-center max-w-7xl mx-auto">
                 {
                     products?.map(product => (
                         <div class="bg-white rounded-lg overflow-hidden shadow-lg ring ring-primary/40 max-w-md">

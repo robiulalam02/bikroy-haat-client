@@ -47,7 +47,9 @@ const AddAdvertisement = () => {
             const res = await axiosPublic.post('/advertisements', adsData)
             
             if (res.data.insertedId) {
-                toast.success('Advertisement submit successful')
+                toast.success('Advertisement submit successful');
+                setProductImage('');
+                reset();
             } else{
                 toast.error('Failed! Something went wrong!')
             }
@@ -58,7 +60,7 @@ const AddAdvertisement = () => {
 
     return (
         <div className="max-w-2xl mx-auto bg-white p-10 rounded mt-10">
-            <h2 className="text-3xl font-bold text-center mb-6">Add New Advertisement</h2>
+            <h2 className="text-2xl font-extrabold text-center mb-6">Add New Advertisement</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
                 {/* Ad Title */}

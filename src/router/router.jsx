@@ -24,6 +24,7 @@ import UnauthorizedPage from "../Components/unauthorized/UnauthorizedPage";
 import AdminRoute from "../routes/AdminRoute";
 import VendorRoute from "../routes/VendorRoute";
 import AllProducts from "../Pages/Home/All Products/AllProducts";
+import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
 
 export const router = createBrowserRouter([
   {
@@ -73,8 +74,8 @@ export const router = createBrowserRouter([
     Component: Dashboard,
     children: [
       {
-        index: true,
-        element: <p>This is Dashboard Home</p>
+        path: 'home',
+        Component: DashboardHome
       },
       {
         path: 'add-product',

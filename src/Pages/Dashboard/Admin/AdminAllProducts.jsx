@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import React from 'react'
+import React, { useState } from 'react'; // Import useState
 import useAuth from '../../../Hooks/useAuth';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import { MdDone, MdClose, MdEdit, MdDelete } from 'react-icons/md'; // Icons for actions
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router'; // Changed to react-router-dom
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
@@ -12,23 +12,38 @@ const AdminAllProducts = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    // State to manage the active filter status
+    const [filterStatus, setFilterStatus] = useState('all'); // 'all', 'pending', 'approved', 'rejected'
 
     const {
         isPending,
         isLoading,
         isError,
         error,
-        data: products = [],
+        data: paginatedData = [],
         refetch
     } = useQuery({
-        queryKey: ['allProducts'],
+        queryKey: ['allProducts', filterStatus, itemsPerPage, currentPage], // Include filterStatus in queryKey for re-fetching
         queryFn: async () => {
-            const res = await axiosSecure.get('/all-products');
+            console.log("Frontend: itemsPerPage state value:", itemsPerPage);
+            let url = `/admin/all-products?page=${currentPage}&limit=${itemsPerPage}`;
+            if (filterStatus !== 'all') {
+                url += `&status=${filterStatus}`;
+            }
+            const res = await axiosSecure.get(url);
             return res.data;
         },
         enabled: !!user,
         staleTime: 1000 * 60,
     });
+
+    const products = paginatedData.products || [];
+    const totalProducts = paginatedData.totalProducts || 0;
+    const totalPages = paginatedData.totalPages || 1;
+
 
     // Mutation for updating product status (Approve/Reject)
     const updateProductStatusMutation = useMutation({
@@ -38,11 +53,11 @@ const AdminAllProducts = () => {
         },
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ['allProducts'] }); // Refetch all products
-            toast.success('product status updated successfully')
+            toast.success('Product status updated successfully');
         },
         onError: (error) => {
             console.error('Error updating product status:', error);
-            toast.error(error.response?.data?.message || 'Failed to update product status.')
+            toast.error(error.response?.data?.message || 'Failed to update product status.');
         }
     });
 
@@ -54,11 +69,11 @@ const AdminAllProducts = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['allProducts'] }); // Refetch all products
-            toast.success('product deleted successfully')
+            toast.success('Product deleted successfully');
         },
         onError: (error) => {
             console.error('Error deleting product:', error);
-            toast.error(error.response?.data?.message || 'Failed to delete product.')
+            toast.error(error.response?.data?.message || 'Failed to delete product.');
         }
     });
 
@@ -89,10 +104,9 @@ const AdminAllProducts = () => {
                     <div class="text-left">
                         <label for="swal-input-reason" class="text-gray-700 text-sm font-semibold mb-1 block">Rejection Reason <span class="text-red-500">*</span></label>
                         <input
-                            type="text" // <--- Changed from textarea to input type="text"
+                            type="text"
                             id="swal-input-reason"
                             class="
-                                
                                 w-full p-3 border border-gray-300 rounded-md
                                 text-base text-gray-800
                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
@@ -104,10 +118,9 @@ const AdminAllProducts = () => {
                     <div class="text-left">
                         <label for="swal-input-feedback" class="text-gray-700 text-sm font-semibold mb-1 block">Additional Feedback</label>
                         <input
-                            type="text" // <--- Changed from textarea to input type="text"
+                            type="text"
                             id="swal-input-feedback"
                             class="
-                                
                                 w-full p-3 border border-gray-300 rounded-md
                                 text-base text-gray-800
                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
@@ -147,7 +160,6 @@ const AdminAllProducts = () => {
         });
     };
 
-
     const handleDeleteProduct = (productId) => {
         Swal.fire({
             title: 'Are you sure?',
@@ -155,7 +167,7 @@ const AdminAllProducts = () => {
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            cancelButtonColor: '#6B7280', // Neutral gray for cancel
+            cancelButtonColor: '#6B7280',
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -164,98 +176,156 @@ const AdminAllProducts = () => {
         });
     };
 
-    console.log(products)
+    // Pagination Handlers
+    const handlePageChange = (page) => {
+        if (page > 0 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    const handleItemsPerPageChange = (e) => {
+        const items = e.target.value;
+        const parsedItems = parseInt(items);
+        console.log(typeof parsedItems)
+        setItemsPerPage(parsedItems);
+        setCurrentPage(1);
+    };
+
+    // Loading and Error states
+    if (isLoading || isPending) {
+        return <div className="text-center py-8">Loading products...</div>;
+    }
+
+    if (isError) {
+        return <div className="text-center py-8 text-red-500">Error: {error.message}</div>;
+    }
+
+    console.log(products);
+
     return (
-        <div>
+        <div className="container mx-auto p-4 bg-white h-full">
+            <h2 className="text-2xl font-extrabold mb-6 text-gray-800">Manage All Products</h2>
+
+            {/* Filter Buttons */}
+            <div className="mb-6 flex space-x-4">
+                <button
+                    onClick={() => setFilterStatus('all')}
+                    className={`px-4 text-sm py-2 rounded-md transition-colors duration-200
+                        ${filterStatus === 'all' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 text-black hover:bg-primary hover:text-white'}`}
+                >
+                    All Products
+                </button>
+                <button
+                    onClick={() => setFilterStatus('pending')}
+                    className={`px-4 py-2 text-sm rounded-md transition-colors duration-200
+                        ${filterStatus === 'pending' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 text-black hover:bg-primary hover:text-white'}`}
+                >
+                    Pending
+                </button>
+                <button
+                    onClick={() => setFilterStatus('approved')}
+                    className={`px-4 py-2 text-sm rounded-md transition-colors duration-200
+                        ${filterStatus === 'approved' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 text-black hover:bg-primary hover:text-white'}`}
+                >
+                    Approved
+                </button>
+                <button
+                    onClick={() => setFilterStatus('rejected')}
+                    className={`px-4 py-2 text-sm rounded-md transition-colors duration-200
+                        ${filterStatus === 'rejected' ? 'bg-primary text-white shadow-md' : 'bg-gray-200 text-black hover:bg-primary hover:text-white'}`}
+                >
+                    Rejected
+                </button>
+            </div>
+
             {products.length === 0 ? (
                 <p className="text-center text-gray-500 italic text-lg mt-8">
-                    No products found in the system.
+                    No {filterStatus !== 'all' ? filterStatus : ''} products found.
                 </p>
             ) : (
-                <div className="overflow-x-auto border border-gray-200 rounded-lg">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    #
-                                </th>
-                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Image
-                                </th>
-                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Item Name
-                                </th>
-                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Vendor Email
-                                </th>
-                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Market Name
-                                </th>
-                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Price/Unit
-                                </th>
-                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th scope="col" className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {products.map((product, index) => (
-                                <tr key={product._id}>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {index + 1}
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap">
-                                        {product.image && (
-                                            <img src={product.image} alt={product.itemName} className="w-12 h-12 object-cover rounded-md" />
-                                        )}
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {product.itemName || 'N/A'}
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {product.vendorEmail || 'N/A'}
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {product.marketName || 'N/A'}
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {product.pricePerUnit ? `৳${product.pricePerUnit}` : 'N/A'}
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-sm capitalize">
-                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                      ${product.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                                product.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                                                    'bg-yellow-100 text-yellow-800'}`}>
-                                            {product.status || 'pending'}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <div className="flex items-center justify-center gap-6">
-                                            <div className="flex items-center gap-2">
-                                                {/* Approve/Reject Button */}
+                <>
+                    <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        #
+                                    </th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Image
+                                    </th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Item Name
+                                    </th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Vendor Email
+                                    </th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Market Name
+                                    </th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Price/Unit
+                                    </th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th scope="col" className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {products.map((product, index) => (
+                                    <tr key={product._id}>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {index + 1}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap">
+                                            {product.image && (
+                                                <img src={product.image} alt={product.itemName} className="w-12 h-12 object-cover rounded-md" />
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {product.itemName || 'N/A'}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {product.vendorEmail || 'N/A'}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {product.marketName || 'N/A'}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {product.pricePerUnit ? `৳${product.pricePerUnit}` : 'N/A'}
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm capitalize">
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            ${product.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                                    product.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                                        'bg-yellow-100 text-yellow-800'}`}>
+                                                {product.status || 'pending'}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                            <div className="flex items-center justify-center gap-2"> {/* Reduced gap */}
+                                                {/* Approve Button */}
                                                 <button
-                                                    onClick={() => handleApproveProduct(product._id, product.status)}
+                                                    onClick={() => handleApproveProduct(product._id)}
                                                     className="bg-green-500 py-1 px-3 rounded-full text-gray-50 font-semibold text-xs hover:bg-green-400 transition"
-                                                    title={product.status === 'approved' ? 'Mark as Pending' : 'Approve Product'}
-                                                    disabled={updateProductStatusMutation.isPending}
+                                                    title="Approve Product"
+                                                    disabled={updateProductStatusMutation.isPending || product.status === 'approved'}
                                                 >
-                                                    approve
+                                                    <MdDone className="inline-block mr-1" /> Approve
                                                 </button>
+                                                {/* Reject Button */}
                                                 <button
-                                                    onClick={() => handleRejectProduct(product._id, product.status)}
-                                                    className={`bg-red-500 py-1 px-3 rounded-full text-white font-semibold text-xs hover:bg-red-400 transition ${product.status === 'rejected' && 'cursor-not-allowed'}`}
-                                                    title={product.status === 'approved' ? 'Mark as Pending' : 'Approve Product'}
+                                                    onClick={() => handleRejectProduct(product._id)}
+                                                    className={`bg-red-500 py-1 px-3 rounded-full text-white font-semibold text-xs hover:bg-red-400 transition ${product.status === 'rejected' && 'opacity-50 cursor-not-allowed'}`}
+                                                    title="Reject Product"
                                                     disabled={updateProductStatusMutation.isPending || product.status === 'rejected'}
                                                 >
-                                                    reject
+                                                    <MdClose className="inline-block mr-1" /> Reject
                                                 </button>
-                                            </div>
 
-                                            <div className="flex items-center gap-2">
                                                 {/* Update Button */}
                                                 <button
                                                     onClick={() => navigate(`/dashboard/update-product/${product._id}`)}
@@ -275,16 +345,66 @@ const AdminAllProducts = () => {
                                                     <MdDelete className="text-lg" />
                                                 </button>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="mt-8 flex justify-between items-center">
+                            <select
+                                value={itemsPerPage}
+                                onChange={handleItemsPerPageChange}
+                                className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value={5}>5 per page</option>
+                                <option value={10}>10 per page</option>
+                                <option value={20}>20 per page</option>
+                                <option value={50}>50 per page</option>
+                            </select>
+
+                            <nav className="flex justify-center" aria-label="Pagination">
+                                <button
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="px-4 py-2 mx-1 rounded-md font-medium transition-colors duration-200
+                   bg-gray-200 text-gray-700 hover:bg-primary hover:text-white
+                   disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                >
+                                    Previous
+                                </button>
+                                {[...Array(totalPages).keys()].map(page => (
+                                    <button
+                                        key={page + 1}
+                                        onClick={() => handlePageChange(page + 1)}
+                                        className={`px-4 py-2 mx-1 rounded-md font-medium transition-colors duration-200
+                        ${currentPage === page + 1
+                                                ? 'bg-primary text-white shadow-md' // Active state
+                                                : 'bg-gray-200 text-gray-700 hover:bg-primary hover:text-white' // Inactive state
+                                            }`}
+                                    >
+                                        {page + 1}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className="px-4 py-2 mx-1 rounded-md font-medium transition-colors duration-200
+                   bg-gray-200 text-gray-700 hover:bg-primary hover:text-white
+                   disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                >
+                                    Next
+                                </button>
+                            </nav>
+                        </div>
+                    )}
+                </>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default AdminAllProducts
+export default AdminAllProducts;
