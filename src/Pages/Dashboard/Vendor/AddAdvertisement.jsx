@@ -6,10 +6,11 @@ import Spinner from '../../../Components/Loaders/Spinner';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import useAuth from '../../../Hooks/useAuth'
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet-async';
 
 const AddAdvertisement = () => {
 
-    const {profile} = useAuth();
+    const { profile } = useAuth();
     const axiosPublic = useAxiosPublic();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [uploading, setUploading] = useState(false);
@@ -17,7 +18,6 @@ const AddAdvertisement = () => {
     const [productImage, setProductImage] = useState('');
 
     const handleUploadPhoto = async (photo) => {
-        console.log(photo)
 
         try {
             setImgLoading(true)
@@ -35,7 +35,6 @@ const AddAdvertisement = () => {
     }
 
     const onSubmit = async (data) => {
-        console.log(data);
 
         const adsData = {
             ...data,
@@ -43,23 +42,26 @@ const AddAdvertisement = () => {
             vendorEmail: profile?.email,
         }
 
-        try{
+        try {
             const res = await axiosPublic.post('/advertisements', adsData)
-            
+
             if (res.data.insertedId) {
                 toast.success('Advertisement submit successful');
                 setProductImage('');
                 reset();
-            } else{
+            } else {
                 toast.error('Failed! Something went wrong!')
             }
-        } catch (error){
+        } catch (error) {
             toast.error(error.message)
         }
     };
 
     return (
         <div className="max-w-2xl mx-auto bg-white p-10 rounded mt-10">
+            <Helmet>
+                <title>Add Advertisement</title>
+            </Helmet>
             <h2 className="text-2xl font-extrabold text-center mb-6">Add New Advertisement</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 

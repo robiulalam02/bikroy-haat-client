@@ -11,6 +11,7 @@ import { uploadImageToImgBB } from '../../../API/utils';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import Loading from '../../../Components/Loaders/Loading';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet-async';
 
 const UpdateProduct = () => {
     const { id } = useParams();
@@ -37,7 +38,6 @@ const UpdateProduct = () => {
     }, [product]);
 
     const handleUploadPhoto = async (photo) => {
-        console.log(photo)
 
         try {
             setImgLoading(true)
@@ -70,23 +70,8 @@ const UpdateProduct = () => {
 
         }
 
-        console.log(updatedProduct)
-        // const product = {
-        //     marketName: data.marketName,
-        //     date: selectedDate.toISOString().split("T")[0],
-        //     marketDescription: data.marketDescription,
-        //     itemName: data.itemName,
-        //     image: productImage, // handle imgbb upload separately
-        //     pricePerUnit: data.pricePerUnit,
-        //     itemDescription: data.itemDescription || "",
-        // };
-
-        // console.log(product)
-
         try {
             const res = await axiosPublic.put(`/products/${id}`, updatedProduct);
-
-            console.log(res.data)
 
             if (res.data.modifiedCount) {
                 toast.success("Product Updated Successfully!");
@@ -105,8 +90,11 @@ const UpdateProduct = () => {
 
     return (
         <div>
-            <div class="flex items-center justify-center p-12">
-                <div class="mx-auto w-full max-w-2xl bg-white p-10">
+            <Helmet>
+                <title>Update Product</title>
+            </Helmet>
+            <div className="flex items-center justify-center p-12">
+                <div className="mx-auto w-full max-w-2xl bg-white p-10">
                     <h2 className="text-2xl font-bold mb-6 text-center">Update Your Product</h2>
                     <form onSubmit={handleUpdateProduct} className="space-y-6">
                         {/* Vendor Info (Read-only) */}

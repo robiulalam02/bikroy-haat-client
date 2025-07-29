@@ -8,6 +8,7 @@ import Spinner from "../../Components/Loaders/Spinner";
 import Swal from "sweetalert2";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { toast } from "react-toastify";
+import { Helmet } from "react-helmet-async";
 
 const Login = () => {
 
@@ -16,10 +17,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
-
-  const handleGoogleLogin = () => {
-    console.log("Google Login");
-  };
 
   const {
     register,
@@ -30,7 +27,6 @@ const Login = () => {
   } = useForm()
 
   const onSubmit = async (data) => {
-    console.log(data);
     const { email, password } = data;
 
     // sign in user using firebase
@@ -46,7 +42,6 @@ const Login = () => {
           showConfirmButton: false,
           timer: 1500
         });
-        console.log('current user: ', res.user.email);
         navigate('/')
       }
     } catch (error) {
@@ -74,11 +69,8 @@ const Login = () => {
           lastSignIn: new Date().toISOString(),
         }
 
-        console.log(user)
-
         //  save user to DB
         const res = await axiosPublic.post('/users', userInfo)
-        console.log(res.data);
 
         Swal.fire({
           position: "center",
@@ -99,6 +91,9 @@ const Login = () => {
 
   return (
     <section className="flex items-center justify-center  px-4 py-15">
+      <Helmet>
+        <title>User Login</title>
+      </Helmet>
       <div className="w-full max-w-md bg-white rounded-xl p-8">
         <div className="mb-6 text-center">
           <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
@@ -142,7 +137,7 @@ const Login = () => {
           <div className="relative">
             <label className="block text-sm text-gray-600 mb-1">Password</label>
             <input
-              type={showPass? 'text' : 'password'}
+              type={showPass ? 'text' : 'password'}
               name="password"
               required
               className="w-full border-b border-gray-300 focus:outline-none focus:border-primary transition placeholder:text-sm p-2"

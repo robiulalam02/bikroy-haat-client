@@ -10,6 +10,7 @@ import axios from 'axios';
 import Spinner from '../../Components/Loaders/Spinner';
 import { VscEye, VscEyeClosed } from 'react-icons/vsc';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet-async';
 
 const Register = () => {
 
@@ -22,7 +23,6 @@ const Register = () => {
   const [showPass, setShowPass] = useState(false);
 
   const handleUploadPhoto = async (photo) => {
-    console.log(photo)
 
     try {
       setImgLoading(true)
@@ -30,7 +30,6 @@ const Register = () => {
       const imageURL = res.data.data.display_url
       if (imageURL) {
         setProfilePhoto(imageURL)
-        console.log(imageURL)
       }
     } catch {
       setImgLoading(false)
@@ -104,11 +103,8 @@ const Register = () => {
           lastSignIn: new Date().toISOString(),
         }
 
-        console.log(user)
-
         //  save user to DB
         const res = await axiosPublic.post('/users', userInfo)
-        console.log(res.data);
 
         Swal.fire({
           position: "center",
@@ -129,6 +125,9 @@ const Register = () => {
 
   return (
     <section className="flex items-center justify-center px-4">
+      <Helmet>
+        <title>User Register</title>
+      </Helmet>
       <div className="w-full max-w-lg bg-white rounded-xl p-8">
         <div className="mb-6 text-center">
           <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>

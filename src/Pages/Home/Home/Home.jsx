@@ -6,11 +6,15 @@ import BuyerTips from '../ReviewSlider/BuyerTips'
 import ReviewSlider from '../ReviewSlider/ReviewSlider'
 import SeasonalPicks from '../SeasonalPicks/SeasonalPicks'
 import { AuthContext } from '../../../Providers/AuthContext'
+import { Helmet } from 'react-helmet-async'
 
 const Home = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Bikroy Haat | Home</title>
+      </Helmet>
       <BannerSlider />
       <Products />
       

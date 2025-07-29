@@ -7,6 +7,8 @@ import { MdCheckCircleOutline } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import { AiOutlineDelete } from "react-icons/ai";
 import { toast } from 'react-toastify';
+import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
+import { Helmet } from 'react-helmet-async';
 
 
 const AllAdvertisements = () => {
@@ -31,8 +33,6 @@ const AllAdvertisements = () => {
         // enabled: !!profile?.isAdmin
     });
 
-    console.log(advertisements);
-
     // Mutation for updating advertisement status (Approve)
     const updateAdvertisementStatusMutation = useMutation({
         mutationFn: async ({ advertisementId, status }) => {
@@ -46,6 +46,22 @@ const AllAdvertisements = () => {
         onError: (err) => {
             toast.error(err.response?.data?.message || 'Failed to update advertisement status. Please try again.')
         },
+    });
+
+    // Mutation for deleting a advertisement
+    const deleteAdsMutation = useMutation({
+        mutationFn: async (advertisementId) => {
+            const res = await axiosSecure.delete(`/advertisements/${advertisementId}`);
+            return res.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['allAdvertisements'] }); // Refetch all products
+            toast.success('Advertisement deleted successfully');
+        },
+        onError: (error) => {
+            console.error('Error deleting Advertisement:', error);
+            toast.error(error.response?.data?.message || 'Failed to delete Advertisement.');
+        }
     });
 
     // Handler for Approve button
@@ -65,13 +81,37 @@ const AllAdvertisements = () => {
         });
     };
 
+    // Handler for Delete button
+    const handleDeleteAdvertisement = (advertisementId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete this advertisement!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'red', // Green for Approve
+            cancelButtonColor: '#6B7280', // Neutral gray for Cancel
+            confirmButtonText: 'Yes, Delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteAdsMutation.mutate(advertisementId);
+            }
+        });
+    };
+
     // Loading and Error states
     if (isLoading || isPending) {
         return <div className="text-center py-8">Loading advertisements...</div>;
     }
 
+    if (isError || error) {
+        return <ErrorMessage />
+    }
+
     return (
         <div className="p-4 md:p-8 bg-white overflow-x-auto h-full">
+            <Helmet>
+                <title>All Advertisements</title>
+            </Helmet>
             <h1 className="text-2xl font-extrabold text-gray-800 mb-6 text-center">
                 All Advertisements
             </h1>
@@ -88,7 +128,7 @@ const AllAdvertisements = () => {
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Description</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendor Email</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -104,7 +144,7 @@ const AllAdvertisements = () => {
                                         )}
                                     </td>
                                     <td className="px-4 py-4 text-sm font-medium text-gray-900 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap" title={ad.title}>{ad.title || 'N/A'}</td>
-                                    <td className="px-4 py-4 text-sm text-gray-900 max-w-xs overflow-hidden text-ellipsis" title={ad.description}>{ad.description || 'N/A'}</td>
+                                    <td className="px-4 py-4 text-sm text-gray-900 overflow-hidden text-ellipsis hidden lg:table-cell">{ad.description || 'N/A'}</td>
                                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{ad.vendorEmail || 'N/A'}</td>
                                     <td className="px-4 py-4 whitespace-nowrap text-sm capitalize">
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -116,16 +156,25 @@ const AllAdvertisements = () => {
                                     </td>
                                     <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <div className='flex items-center gap-2'>
-                                            {ad.status !== 'approved' && (
+                                            {ad.status !== 'approved' ? (
                                                 <button
                                                     onClick={() => handleApproveAdvertisement(ad._id)}
                                                     className="flex items-center gap-1 px-4 py-2 bg-base-200 text-green-600 rounded-full shadow-md transition duration-200"
                                                 >
                                                     approve <MdCheckCircleOutline size={18} />
                                                 </button>
-                                            )}
+                                            ) :
+                                                (
+                                                    <button
+                                                        disabled
+                                                        className="flex items-center gap-1 px-4 py-2 bg-base-200 text-neutral-400 rounded-full shadow-md transition duration-200"
+                                                    >
+                                                        approved <MdCheckCircleOutline size={18} />
+                                                    </button>
+                                                )
+                                            }
                                             <button
-                                                // onClick={() => handleDeleteAdvertisement(ad._id)}
+                                                onClick={() => handleDeleteAdvertisement(ad._id)}
                                                 className="p-3 rounded-2xl shadow-md bg-base-200 text-red-500  transition duration-200 ml-2"
                                                 title="Delete Advertisement"
                                             >

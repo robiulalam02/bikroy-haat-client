@@ -6,6 +6,8 @@ import { MdDone, MdClose, MdEdit, MdDelete } from 'react-icons/md'; // Icons for
 import { useNavigate } from 'react-router'; // Changed to react-router-dom
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
+import { Helmet } from 'react-helmet-async';
 
 const AdminAllProducts = () => {
     const { profile: user } = useAuth();
@@ -28,7 +30,6 @@ const AdminAllProducts = () => {
     } = useQuery({
         queryKey: ['allProducts', filterStatus, itemsPerPage, currentPage], // Include filterStatus in queryKey for re-fetching
         queryFn: async () => {
-            console.log("Frontend: itemsPerPage state value:", itemsPerPage);
             let url = `/admin/all-products?page=${currentPage}&limit=${itemsPerPage}`;
             if (filterStatus !== 'all') {
                 url += `&status=${filterStatus}`;
@@ -56,7 +57,6 @@ const AdminAllProducts = () => {
             toast.success('Product status updated successfully');
         },
         onError: (error) => {
-            console.error('Error updating product status:', error);
             toast.error(error.response?.data?.message || 'Failed to update product status.');
         }
     });
@@ -100,13 +100,13 @@ const AdminAllProducts = () => {
         Swal.fire({
             title: 'Reject Product',
             html: `
-                <div class="flex flex-col gap-4 p-4 -mx-4">
-                    <div class="text-left">
-                        <label for="swal-input-reason" class="text-gray-700 text-sm font-semibold mb-1 block">Rejection Reason <span class="text-red-500">*</span></label>
+                <div className="flex flex-col gap-4 p-4 -mx-4">
+                    <div className="text-left">
+                        <label for="swal-input-reason" className="text-gray-700 text-sm font-semibold mb-1 block">Rejection Reason <span className="text-red-500">*</span></label>
                         <input
                             type="text"
                             id="swal-input-reason"
-                            class="
+                            className="
                                 w-full p-3 border border-gray-300 rounded-md
                                 text-base text-gray-800
                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
@@ -115,12 +115,12 @@ const AdminAllProducts = () => {
                             placeholder="e.g., Low quality image, Incomplete description, Prohibited item"
                         />
                     </div>
-                    <div class="text-left">
-                        <label for="swal-input-feedback" class="text-gray-700 text-sm font-semibold mb-1 block">Additional Feedback</label>
+                    <div className="text-left">
+                        <label for="swal-input-feedback" className="text-gray-700 text-sm font-semibold mb-1 block">Additional Feedback</label>
                         <input
                             type="text"
                             id="swal-input-feedback"
-                            class="
+                            className="
                                 w-full p-3 border border-gray-300 rounded-md
                                 text-base text-gray-800
                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
@@ -186,7 +186,6 @@ const AdminAllProducts = () => {
     const handleItemsPerPageChange = (e) => {
         const items = e.target.value;
         const parsedItems = parseInt(items);
-        console.log(typeof parsedItems)
         setItemsPerPage(parsedItems);
         setCurrentPage(1);
     };
@@ -197,13 +196,14 @@ const AdminAllProducts = () => {
     }
 
     if (isError) {
-        return <div className="text-center py-8 text-red-500">Error: {error.message}</div>;
+        return <ErrorMessage />
     }
-
-    console.log(products);
 
     return (
         <div className="container mx-auto p-4 bg-white h-full">
+            <Helmet>
+                <title>All Products</title>
+            </Helmet>
             <h2 className="text-2xl font-extrabold mb-6 text-gray-800">Manage All Products</h2>
 
             {/* Filter Buttons */}
@@ -308,14 +308,28 @@ const AdminAllProducts = () => {
                                         <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
                                             <div className="flex items-center justify-center gap-2"> {/* Reduced gap */}
                                                 {/* Approve Button */}
-                                                <button
-                                                    onClick={() => handleApproveProduct(product._id)}
-                                                    className="bg-green-500 py-1 px-3 rounded-full text-gray-50 font-semibold text-xs hover:bg-green-400 transition"
-                                                    title="Approve Product"
-                                                    disabled={updateProductStatusMutation.isPending || product.status === 'approved'}
-                                                >
-                                                    <MdDone className="inline-block mr-1" /> Approve
-                                                </button>
+                                                {
+                                                    product.status !== 'approved' ?
+                                                        (
+                                                            <button
+                                                                onClick={() => handleApproveProduct(product._id)}
+                                                                className="bg-green-500 py-1 px-3 rounded-full text-gray-50 font-semibold text-xs hover:bg-green-400 transition"
+                                                                title="Approve Product"
+                                                                disabled={updateProductStatusMutation.isPending || product.status === 'approved'}
+                                                            >
+                                                                <MdDone className="inline-block mr-1" /> Approve
+                                                            </button>
+                                                        ) :
+                                                        (
+                                                            <button
+                                                                disabled
+                                                                className="bg-neutral-200 py-1 px-3 rounded-full text-gray-900 font-semibold text-xs"
+                                                                title="Approve Product"
+                                                            >
+                                                                <MdDone className="inline-block mr-1" /> Approved
+                                                            </button>
+                                                        )
+                                                }
                                                 {/* Reject Button */}
                                                 <button
                                                     onClick={() => handleRejectProduct(product._id)}

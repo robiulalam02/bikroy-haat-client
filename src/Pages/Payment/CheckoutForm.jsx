@@ -26,7 +26,6 @@ const inputStyle = {
 };
 
 const CheckoutForm = ({ price: amount, product, quantity }) => {
-    console.log(amount)
     const stripe = useStripe();
     const elements = useElements();
     const axiosSecure = useAxiosSecure();
@@ -60,7 +59,6 @@ const CheckoutForm = ({ price: amount, product, quantity }) => {
         });
 
         if (paymentMethodError) {
-            console.log(paymentMethodError.message)
             toast.error(paymentMethodError.message);
             return;
         }
@@ -106,8 +104,8 @@ const CheckoutForm = ({ price: amount, product, quantity }) => {
                         Swal.fire({
                             title: `Order Placed!`,
                             html:
-                                `<p class="text-sm text-gray-700">Your order has been placed successfully.</p>
-                                <p class="mt-2 text-sm  font-medium">Order ID: <span class="font-mono text-blue-600">${res.data.orderId}</span></p>`,
+                                `<p className="text-sm text-gray-700">Your order has been placed successfully.</p>
+                                <p className="mt-2 text-sm  font-medium">Order ID: <span className="font-mono text-blue-600">${res.data.orderId}</span></p>`,
                             icon: 'success',
                             confirmButtonText: 'View Orders',
                             confirmButtonColor: '#77af29', // Tailwind primary-blue

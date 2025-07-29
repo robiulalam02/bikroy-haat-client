@@ -13,8 +13,6 @@ import { BsGraphDownArrow, BsGraphUpArrow } from 'react-icons/bs';
 
 
 const PriceComparisonChart = ({ product }) => {
-  console.log("Product prices:", product.prices);
-
   const [startDate, setStartDate] = useState('');
   const [chartData, setChartData] = useState([]);
   const [initialPrice, setInitialPrice] = useState(null);

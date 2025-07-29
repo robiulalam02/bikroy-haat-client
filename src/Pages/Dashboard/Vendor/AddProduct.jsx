@@ -7,6 +7,7 @@ import { uploadImageToImgBB } from '../../../API/utils';
 import Spinner from '../../../Components/Loaders/Spinner';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet-async';
 
 const AddProduct = () => {
 
@@ -16,7 +17,6 @@ const AddProduct = () => {
     const [productImage, setProductImage] = useState('');
 
     const handleUploadPhoto = async (photo) => {
-        console.log(photo)
 
         try {
             setImgLoading(true)
@@ -89,8 +89,11 @@ const AddProduct = () => {
     };
 
     return (
-        <div class="flex items-center justify-center p-12">
-            <div class="mx-auto w-full max-w-2xl bg-white p-10">
+        <div className="flex items-center justify-center p-12">
+            <Helmet>
+                <title>Add Product</title>
+            </Helmet>
+            <div className="mx-auto w-full max-w-2xl bg-white p-10">
                 <h2 className="text-2xl font-extrabold mb-6 text-center">Add New Product</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Vendor Info (Read-only) */}

@@ -6,6 +6,8 @@ import Loading from '../../../Components/Loaders/Loading';
 import { FaSearch } from 'react-icons/fa'; // Only FaSearch is used now
 import { LuUserCog } from "react-icons/lu";
 import Swal from 'sweetalert2';
+import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
+import { Helmet } from 'react-helmet-async';
 // Assuming ErrorPage component exists
 // import ErrorPage from '../../../Components/ErrorPage';
 
@@ -21,18 +23,17 @@ const AllUsers = () => {
     // Pagination States
     const [currentPage, setCurrentPage] = useState(1);
     // Add itemsPerPage state and initialize it
-    const [itemsPerPage, setItemsPerPage] = useState(10); // Default to 10 items per page
-    const [totalPages, setTotalPages] = useState(1); // State to store total pages from API
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
 
     // State for the modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [userToUpdate, setUserToUpdate] = useState(null);
 
-    // Debounce effect for search input
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-            setCurrentPage(1); // Reset to first page on new search
+            setCurrentPage(1);
         }, 500);
 
         return () => {
@@ -40,21 +41,18 @@ const AllUsers = () => {
         };
     }, [searchTerm]);
 
-    // Effect to reset page when filterRole or itemsPerPage changes
     useEffect(() => {
         setCurrentPage(1);
-        // We don't need to refetch here, useQuery's queryKey will handle it
-    }, [filterRole, itemsPerPage]); // Add itemsPerPage as a dependency here
+    }, [filterRole, itemsPerPage]);
 
     const {
         isPending,
         isLoading,
         isError,
         error,
-        data, // data will now be the entire response object: { users, totalUsers, currentPage, totalPages }
+        data,
     } = useQuery({
-        // queryKey changes when filterRole, debouncedSearchTerm, currentPage, or itemsPerPage change
-        queryKey: ['allUsers', filterRole, debouncedSearchTerm, currentPage, itemsPerPage], // Include itemsPerPage
+        queryKey: ['allUsers', filterRole, debouncedSearchTerm, currentPage, itemsPerPage],
         queryFn: async () => {
             let url = '/admin/users';
             const queryParams = [];
@@ -67,14 +65,14 @@ const AllUsers = () => {
             }
             // Add pagination parameters
             queryParams.push(`page=${currentPage}`);
-            queryParams.push(`limit=${itemsPerPage}`); // Send itemsPerPage to backend
+            queryParams.push(`limit=${itemsPerPage}`); 
 
             if (queryParams.length > 0) {
                 url += `?${queryParams.join('&')}`;
             }
 
             const res = await axiosSecure.get(url);
-            return res.data; // This will be { users, totalUsers, currentPage, totalPages }
+            return res.data;
         },
         enabled: !!user,
         staleTime: 1000 * 60,
@@ -167,11 +165,14 @@ const AllUsers = () => {
 
     if (isError) {
         // Ensure ErrorPage is imported or handle error display inline
-        return <div className="text-center py-8 text-red-500">Error: {error?.message || "Failed to load users."}</div>;
+        return <ErrorMessage />
     }
 
     return (
         <div className='p-4 bg-white h-full'>
+            <Helmet>
+                <title>All Users</title>
+            </Helmet>
             <h2 className="text-2xl font-extrabold mb-6 text-gray-800">Manage All Users</h2>
             {/* Filtering Options */}
             <div className="mb-6 flex flex-wrap gap-3 items-center">

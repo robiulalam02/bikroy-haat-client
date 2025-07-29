@@ -13,11 +13,11 @@ import PriceComparisonChart from '../../../Components/Comparison/PriceComparison
 import Reviews from '../../../Components/Reviews/Reviews';
 import { toast } from 'react-toastify';
 import Loading from '../../../Components/Loaders/Loading';
+import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
 
 
 const ProductDetails = () => {
   const { id } = useParams();
-  console.log(id);
   const { profile } = useAuth();
   const [quantity, setQuantity] = useState(1);
 
@@ -30,7 +30,7 @@ const ProductDetails = () => {
   const axiosSecure = useAxiosSecure();
   const axiosPublic = useAxiosPublic();
 
-  const { data: product = [], isLoading: productLoading } = useQuery({
+  const { data: product = [], isLoading: productLoading, isError, error } = useQuery({
     queryKey: ['productDetails', id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/products/${id}`);
@@ -39,10 +39,7 @@ const ProductDetails = () => {
     enabled: !!id,
   });
 
-  // console.log(product?.marketDescription.length)
-
   const totalPrice = parseFloat(product?.pricePerUnit || 0) * quantity;
-  console.log(totalPrice)
 
   const { data: reviews = [], isLoading: reviewLoading, refetch: reviewRefetch } = useQuery({
     queryKey: ['reviews', id],
@@ -52,8 +49,6 @@ const ProductDetails = () => {
     },
     enabled: !!id
   });
-
-  console.log(reviews);
 
   // Determine which reviews to display
   const reviewsData = showAllReviews ? reviews : reviews?.slice(0, 2);
@@ -82,12 +77,9 @@ const ProductDetails = () => {
       image: profile?.photoURL
     };
 
-    console.log(reviewData)
-
     // send post req to save review in DB
     try {
       const res = await axiosSecure.post('/reviews', reviewData)
-      console.log(res.data);
 
       if (res.data.insertedId) {
         Swal.fire({
@@ -121,20 +113,17 @@ const ProductDetails = () => {
       productId: product._id,
       user: profile?.email
     }
-    console.log(data)
 
     // post req to save watchlist in DB
     try {
       const res = await axiosSecure.post('/watchlist', data)
-      console.log(res.data);
       if (res.data.insertedId) {
         toast.success('product added to watchlist')
       } else {
         toast.error('something went wrong while adding product to watchlist')
       }
     } catch (error) {
-      console.log(error.response.data.message)
-      toast.error(error.response.data.message)
+      console.log(error.message)
     }
   }
 
@@ -142,13 +131,17 @@ const ProductDetails = () => {
     return <Loading />
   }
 
+  if (isError || error) {
+    return <ErrorMessage />
+  }
+
   return (
     <div className='max-w-screen-lg mx-auto'>
-      <div className=' bg-white mt-10 flex justify-between gap-5 p-4'>
-        <div className='w-6/12 overflow-hidden h-96'>
-          <img className='w-full object-cover' src={product?.image} alt="" />
+      <div className=' bg-white md:mt-10 flex flex-col md:flex-row justify-between gap-5 p-4'>
+        <div className='w-full md:w-6/12 overflow-hidden h-96 flex justify-center items-center'>
+          <img className='w-[300px] md:w-80 object-cover' src={product?.image} alt="" />
         </div>
-        <div className='w-6/12 h-full'>
+        <div className='w-full md:w-6/12 h-full'>
 
           <div className='pb-3 border-b border-gray-200 space-y-1.5'>
             <h2 className='font-semibold text-xl'>{product?.itemName}</h2>
@@ -231,7 +224,7 @@ const ProductDetails = () => {
                     +
                   </button>
                 </div>
-                <button onClick={() => handleBuyNow(product._id)} class="inline-flex items-center justify-center gap-1 border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-primary hover:bg-primary/90 border-base-200 text-stone-50 rounded-lg transition antialiased">
+                <button onClick={() => handleBuyNow(product._id)} className="inline-flex items-center justify-center gap-1 border align-middle select-none font-sans font-medium text-center duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm py-2 px-4 shadow-sm hover:shadow-md bg-primary hover:bg-primary/90 border-base-200 text-stone-50 rounded-lg transition antialiased">
                   <HiOutlineShoppingBag className='text-lg' />
                   Buy Product
                 </button>
@@ -246,113 +239,118 @@ const ProductDetails = () => {
       </div>
 
       {/* comparison */}
-      <div className='bg-white p-4 my-10'>
+      <div className='bg-white p-4 md:my-10 py-10'>
         <PriceComparisonChart product={product} />
       </div>
 
       {/* Review Section */}
 
-      <div className='bg-white p-4 my-10 min-h-screen'>
+      {
+        reviewLoading ?
+          <Loading />
+          :
+          <div className='bg-white px-4 py-10 md:py-4 md:my-10 min-h-screen'>
 
-        <h2 className='text-primary text-xl text-center uppercase font-semibold '>User Reviews</h2>
+            <h2 className='text-primary text-xl text-center uppercase font-semibold '>User Reviews</h2>
 
-        {
-          reviews?.length > 0 ?
-            reviewLoading ?
-              <Loading />
-              :
-              <Reviews setShowAllReviews={setShowAllReviews} showAllReviews={showAllReviews} reviewsData={reviewsData} />
-            :
-            <div className='h-40 flex justify-center items-center'>
-              <p className='text-error text-center'>currently there are no reviews available for this product</p>
-            </div>
-        }
+            {
+              reviews?.length > 0 ?
+                reviewLoading ?
+                  <Loading />
+                  :
+                  <Reviews setShowAllReviews={setShowAllReviews} showAllReviews={showAllReviews} reviewsData={reviewsData} />
+                :
+                <div className='h-40 flex justify-center items-center'>
+                  <p className='text-error text-center'>currently there are no reviews available for this product</p>
+                </div>
+            }
 
-        <div className='mt-10'>
-          <h2 className='text-primary text-xl text-center uppercase font-semibold'>Share Your Feedback</h2>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="max-w-md mx-auto p-6 shadow-md rounded-xl space-y-4 mt-2"
-          >
-            {/* Star Rating */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Your Rating
-              </label>
-              <div className="flex space-x-1">
-                {[...Array(5)].map((_, index) => {
-                  const starValue = index + 1;
-                  return (
-                    <button
-                      type="button"
-                      key={starValue}
-                      onClick={() => setRating(starValue)}
-                      onMouseEnter={() => setHover(starValue)}
-                      onMouseLeave={() => setHover(0)}
-                    >
-                      <FaStar
-                        size={24}
-                        className={`cursor-pointer transition-colors ${(hover || rating) >= starValue
-                          ? "text-yellow-400"
-                          : "text-gray-300"
-                          }`}
-                      />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Name Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Your Name
-              </label>
-              <input
-                type="text"
-                // value={name}
-                required
-                // onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary"
-                placeholder="John Doe"
-                {...register("name", { required: "Name is required" })}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
-              )}
-            </div>
-
-            {/* Review Textarea */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Your Review
-              </label>
-              <textarea
-                // value={review}
-                required
-                // onChange={(e) => setReview(e.target.value)}
-                rows={4}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none  focus:border-primary"
-                placeholder="Write a short review..."
-                {...register("review", { required: "Review is required" })}
-              />
-              {errors.review && (
-                <p className="text-sm text-red-500 mt-1">{errors.review.message}</p>
-              )}
-            </div>
-
-            {/* Submit Button */}
-            <div>
-              <button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90 border border-base-200 shadow text-white font-medium py-2 px-4 rounded-md transition"
+            <div className='mt-10'>
+              <h2 className='text-primary text-xl text-center uppercase font-semibold'>Share Your Feedback</h2>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="max-w-md mx-auto p-6 shadow-md rounded-xl space-y-4 mt-2"
               >
-                Submit Review
-              </button>
+                {/* Star Rating */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Rating
+                  </label>
+                  <div className="flex space-x-1">
+                    {[...Array(5)].map((_, index) => {
+                      const starValue = index + 1;
+                      return (
+                        <button
+                          type="button"
+                          key={starValue}
+                          onClick={() => setRating(starValue)}
+                          onMouseEnter={() => setHover(starValue)}
+                          onMouseLeave={() => setHover(0)}
+                        >
+                          <FaStar
+                            size={24}
+                            className={`cursor-pointer transition-colors ${(hover || rating) >= starValue
+                              ? "text-yellow-400"
+                              : "text-gray-300"
+                              }`}
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Name Input */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    // value={name}
+                    required
+                    // onChange={(e) => setName(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                    placeholder="John Doe"
+                    {...register("name", { required: "Name is required" })}
+                  />
+                  {errors.name && (
+                    <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
+                  )}
+                </div>
+
+                {/* Review Textarea */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Review
+                  </label>
+                  <textarea
+                    // value={review}
+                    required
+                    // onChange={(e) => setReview(e.target.value)}
+                    rows={4}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none  focus:border-primary"
+                    placeholder="Write a short review..."
+                    {...register("review", { required: "Review is required" })}
+                  />
+                  {errors.review && (
+                    <p className="text-sm text-red-500 mt-1">{errors.review.message}</p>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <div>
+                  <button
+                    type="submit"
+                    className="w-full bg-primary hover:bg-primary/90 border border-base-200 shadow text-white font-medium py-2 px-4 rounded-md transition"
+                  >
+                    Submit Review
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
-      </div>
+          </div>
+      }
 
     </div>
   )

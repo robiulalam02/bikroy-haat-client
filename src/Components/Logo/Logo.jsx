@@ -6,8 +6,8 @@ const Logo = () => {
   const navigate = useNavigate();
   return (
     <button onClick={()=> navigate('/')} className='flex items-center gap-1'>
-      <img className='w-10' src={logo} alt="" />
-      <p className='text-3xl uppercase font-gliker text-primary'>bikroy haat</p>
+      <img className='w-8 md:w-10' src={logo} alt="" />
+      <p className='text-2xl md:text-3xl uppercase font-gliker text-primary'>bikroy haat</p>
     </button>
   )
 }

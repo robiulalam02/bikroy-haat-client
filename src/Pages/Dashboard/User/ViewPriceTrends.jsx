@@ -6,27 +6,46 @@ import Loading from '../../../Components/Loaders/Loading';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TbCurrencyTaka } from "react-icons/tb";
 import { FaArrowsLeftRight, FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
-
+import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
+import { useLocation, useNavigate } from 'react-router';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 
 
 const ViewPriceTrends = () => {
-  const { profile } = useAuth(); // Assumed to provide user email via profile?.email
+  const { profile } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [selectedItem, setSelectedItem] = useState(null); // State to hold the currently selected watchlist item
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  // A simple page transition variant
+  const pageVariants = {
+    initial: { opacity: 0, scale: 0.95 }, // Slight scale in from center
+    in: { opacity: 1, scale: 1 },
+    out: { opacity: 0, scale: 0.95 }
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "easeInOut",
+    duration: 0.3
+  };
 
   // Fetch user's watchlist items using TanStack Query
   const {
     isPending,
     isLoading,
-    refetch, // Keep refetch if you need to manually trigger a re-fetch
+    refetch,
     error,
-    data: watchlistItems = [] // Renamed 'watchlists' to 'watchlistItems' for clarity
+    isError,
+    data: watchlistItems = []
   } = useQuery({
-    queryKey: ['userWatchlistItems', profile?.email], // Query key includes user email for specificity
+    queryKey: ['userWatchlistItems', profile?.email],
     queryFn: async () => {
-      // Ensure your backend endpoint is correctly set up to handle 'email' query param
+
       const res = await axiosSecure.get(`/watchlists?email=${profile?.email}`);
 
       // Crucial: Sort each item's 'prices' array by date once fetched for consistent charting
@@ -39,7 +58,7 @@ const ViewPriceTrends = () => {
       }));
     },
     enabled: !!profile?.email, // Only fetch if user email exists (user is logged in)
-    staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
+    // staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
   });
 
   // Effect to automatically select the first item when watchlistItems load
@@ -64,17 +83,21 @@ const ViewPriceTrends = () => {
     ? currentPrice - initialPrice
     : null;
 
-  // --- Render UI ---
+
   if (isLoading || isPending) {
     return <Loading />;
   }
 
-  if (error) {
-    return <div className="p-8 text-center text-red-600">Error loading price trends: {error.message}</div>;
+  if (error || isError) {
+    return <ErrorMessage />
   }
 
   return (
-    <div className="p-4">
+    <div
+      className="p-4">
+      <Helmet>
+        <title>Price Trends</title>
+      </Helmet>
       <div className="font-sans p-8 max-w-6xl mx-auto bg-white rounded-lg shadow-xl">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">View Price Trends</h1>
 
@@ -108,7 +131,11 @@ const ViewPriceTrends = () => {
 
           {/* Right Panel: Price Trend Graph and Details */}
           <div className="md:col-span-2 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-            {selectedItem ? (
+            {watchlistItems.length === 0 ? ( // Added this check
+              <p className="text-center text-gray-500 italic mt-24">
+                Your watchlist is empty. Add items to track their prices!
+              </p>
+            ) : selectedItem ? (
               <>
                 <div className="flex items-center mb-4">
                   {selectedItem.image && (
@@ -124,7 +151,7 @@ const ViewPriceTrends = () => {
                   </h2>
                 </div>
 
-                {chartData.length > 1 ? ( // Needs at least 2 points for a line
+                {chartData.length > 1 ? (
                   <>
                     <ResponsiveContainer width="100%" height={300}>
                       <LineChart
@@ -141,7 +168,6 @@ const ViewPriceTrends = () => {
 
                     {overallChange !== null && (
                       <div className="text-center text-base sm:text-lg font-semibold mt-4 sm:mt-6 p-3 sm:p-4 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
-                        {/* Initial Price Line */}
                         <span className="block mb-1">
                           <span className="font-bold">Initial Price ({chartData[0]?.name || 'N/A'}):</span>
                           <span className="inline-flex items-center ml-1 text-green-600">
@@ -149,7 +175,6 @@ const ViewPriceTrends = () => {
                           </span>
                         </span>
 
-                        {/* Current Price Line */}
                         <span className="block mb-2">
                           <span className="font-bold">Current Price ({chartData[chartData.length - 1]?.name || 'N/A'}):</span>
                           <span className="inline-flex items-center ml-1 text-green-600">
@@ -157,7 +182,6 @@ const ViewPriceTrends = () => {
                           </span>
                         </span>
 
-                        {/* Overall Change Message */}
                         <span className="flex items-center justify-center font-bold text-base sm:text-lg">
                           {overallChange > 0
                             ? (
@@ -202,6 +226,12 @@ const ViewPriceTrends = () => {
           </div>
         </div>
       </div>
+      {
+        watchlistItems?.length === 0 &&
+        <div className='text-center mt-5'>
+          <button onClick={() => navigate('/all-products')} className='btn btn-primary text-white'>Add to Watchlist</button>
+        </div>
+      }
     </div>
   );
 };

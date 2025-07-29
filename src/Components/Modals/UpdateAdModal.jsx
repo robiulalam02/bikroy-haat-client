@@ -27,7 +27,6 @@ export default function UpdateAdModal({ isOpen, closeModal, adData, onUpdate, re
     }, [adData]);
 
     const handleUploadPhoto = async (photo) => {
-        console.log(photo)
 
         try {
             setImgLoading(true)
@@ -38,7 +37,6 @@ export default function UpdateAdModal({ isOpen, closeModal, adData, onUpdate, re
             }
         } catch {
             setImgLoading(false)
-            console.log('image upload failed')
         } finally {
             setImgLoading(false)
         }

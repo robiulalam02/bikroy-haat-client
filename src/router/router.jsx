@@ -25,6 +25,7 @@ import AdminRoute from "../routes/AdminRoute";
 import VendorRoute from "../routes/VendorRoute";
 import AllProducts from "../Pages/Home/All Products/AllProducts";
 import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
+import ErrorPage from "../Components/Error Page/ErrorPage";
 
 export const router = createBrowserRouter([
   {
@@ -74,7 +75,7 @@ export const router = createBrowserRouter([
     Component: Dashboard,
     children: [
       {
-        path: 'home',
+        path: 'profile',
         Component: DashboardHome
       },
       {
@@ -96,9 +97,7 @@ export const router = createBrowserRouter([
       {
         path: 'update-product/:id',
         element: <PrivateRoute>
-          <VendorRoute>
             <UpdateProduct />
-          </VendorRoute>
         </PrivateRoute>
       },
       {
@@ -164,5 +163,9 @@ export const router = createBrowserRouter([
         </PrivateRoute>
       },
     ]
+  },
+  {
+    path: '*',
+    Component: ErrorPage
   }
 ]);

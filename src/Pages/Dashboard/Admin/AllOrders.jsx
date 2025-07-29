@@ -4,6 +4,8 @@ import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../../../Components/Loaders/Loading';
 import moment from 'moment';
+import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
+import { Helmet } from 'react-helmet-async';
 
 const AllOrders = () => {
     const { profile } = useAuth(); // Assuming profile contains user role/email
@@ -26,18 +28,19 @@ const AllOrders = () => {
         // enabled: !!profile?.isAdmin
     });
 
-    console.log(orders)
-
     if (isLoading || isPending) {
         return <Loading />;
     }
 
-    // if (isError) {
-    //     return <ErrorPage errorMessage={error?.message || "Failed to load orders."} />;
-    // }
+    if (isError || error) {
+        return <ErrorMessage />
+    }
 
     return (
         <div className="p-4 bg-white h-full overflow-x-auto">
+            <Helmet>
+                <title>All Orders</title>
+            </Helmet>
             <h1 className="text-2xl font-extrabold text-gray-800 mb-6 text-center">
                 All Orders
             </h1>
