@@ -14,12 +14,15 @@ import Reviews from '../../../Components/Reviews/Reviews';
 import { toast } from 'react-toastify';
 import Loading from '../../../Components/Loaders/Loading';
 import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
+import useUserRole from '../../../Hooks/useUserRole'
 
 
 const ProductDetails = () => {
   const { id } = useParams();
   const { profile } = useAuth();
+  console.log(profile.photoURL)
   const [quantity, setQuantity] = useState(1);
+  const { isUser } = useUserRole();
 
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -71,10 +74,11 @@ const ProductDetails = () => {
 
     const reviewData = {
       name: data.name,
+      email: profile?.email,
       review: data.review,
       rating,
       productId: product?._id,
-      image: profile?.photoURL
+      image: profile.photoURL
     };
 
     // send post req to save review in DB
@@ -98,15 +102,22 @@ const ProductDetails = () => {
   }
 
   const handleBuyNow = (id) => {
-    navigate(`/payment/${id}`, {
-      state: {
-        totalPrice,
-        quantity
-      },
-    });
+    if (!isUser) {
+      toast.error('register as user to purchase a product')
+    } else {
+      navigate(`/payment/${id}`, {
+        state: {
+          totalPrice,
+          quantity
+        },
+      });
+    }
   };
 
   const handleWatchlist = async () => {
+    if (!isUser) {
+      return toast.error('register as user to add product in watchlist')
+    }
     const { _id, ...productData } = product;
     const data = {
       ...productData,

@@ -10,6 +10,7 @@ import {
 // Import moment for robust date handling and formatting if not already used globally
 import moment from 'moment';
 import { BsGraphDownArrow, BsGraphUpArrow } from 'react-icons/bs';
+import analysisIcon from '../../assets/analysis.png';
 
 
 const PriceComparisonChart = ({ product }) => {
@@ -80,7 +81,10 @@ const PriceComparisonChart = ({ product }) => {
 
   return (
     <div className="font-sans p-5 max-w-4xl mx-auto bg-gray-50 rounded-lg shadow-lg">
-      <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Product Price Trend Analysis 📈</h2>
+      <div className='flex items-center gap-2 justify-center mb-4'>
+        <h2 className="text-3xl font-bold text-gray-800 text-center ">Product Price Trend Analysis</h2>
+        <img className='w-8' src={analysisIcon} alt="" />
+      </div>
       <p className="text-gray-600 leading-relaxed mb-6 text-center">
         Select a historical date to see how the item's price has changed since then. The chart will display all price updates from your selected date forward, providing a clear view of market fluctuations over time.
       </p>

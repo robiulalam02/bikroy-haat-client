@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../Providers/AuthContext";
@@ -17,6 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const location = useLocation();
 
   const {
     register,
@@ -42,7 +43,7 @@ const Login = () => {
           showConfirmButton: false,
           timer: 1500
         });
-        navigate('/')
+        navigate(`${location.state ? location.state : '/'}`)
       }
     } catch (error) {
       toast.error("invalid email & password")
@@ -79,7 +80,7 @@ const Login = () => {
           showConfirmButton: false,
           timer: 1500
         });
-        navigate('/')
+        navigate(`${location.state ? location.state : '/'}`)
       }
     } catch (error) {
       toast.error(error.message);

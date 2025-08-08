@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
 import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { auth } from '../Firebase/firebase.init';
-import useAxiosPublic from '../Hooks/useAxiosPublic';
 import { toast } from 'react-toastify';
+import useAxiosPublic from '../Hooks/useAxiosPublic';
 
 const provider = new GoogleAuthProvider();
 

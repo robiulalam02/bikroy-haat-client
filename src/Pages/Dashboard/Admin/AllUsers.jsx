@@ -65,7 +65,7 @@ const AllUsers = () => {
             }
             // Add pagination parameters
             queryParams.push(`page=${currentPage}`);
-            queryParams.push(`limit=${itemsPerPage}`); 
+            queryParams.push(`limit=${itemsPerPage}`);
 
             if (queryParams.length > 0) {
                 url += `?${queryParams.join('&')}`;
@@ -98,7 +98,6 @@ const AllUsers = () => {
         onSuccess: () => {
             // Invalidate the cache for 'allUsers' to refetch fresh data with current pagination/filters
             queryClient.invalidateQueries({ queryKey: ['allUsers', filterRole, debouncedSearchTerm, currentPage, itemsPerPage] });
-            setIsModalOpen(false);
             setUserToUpdate(null);
             Swal.fire({
                 icon: 'success',
@@ -139,6 +138,7 @@ const AllUsers = () => {
             .then((result) => {
                 if (result.isConfirmed) {
                     updateRoleMutation.mutate({ userId: userToUpdate._id, newRole });
+                    setIsModalOpen(false);
                 } else {
                     setIsModalOpen(false);
                     setUserToUpdate(null);

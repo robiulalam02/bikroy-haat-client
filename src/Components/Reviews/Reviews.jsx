@@ -15,7 +15,9 @@ const Reviews = ({ reviewsData, setShowAllReviews, showAllReviews }) => {
                                 <img className="block h-10 w-10 max-w-full flex-shrink-0 rounded-full align-middle" src={review.image} alt="" />
 
                                 <div className="ml-6">
-                                    <div className="flex items-center">
+                                    <p className="text-sm font-bold text-gray-900">{review.name}</p>
+                                    <p className="text-sm text-gray-600">{review.email}</p>     
+                                    <div className="flex items-center mt-5">
                                         {[...Array(5)].map((_, index) => (
                                             <svg
                                                 key={index}
@@ -28,9 +30,10 @@ const Reviews = ({ reviewsData, setShowAllReviews, showAllReviews }) => {
                                             </svg>
                                         ))}
                                     </div>
+                                    
                                     <p className="mt-5 text-base text-gray-900">{review.review}</p>
-                                    <p className="mt-5 text-sm font-bold text-gray-900">{review.name}</p>
-                                    <p className="mt-1 text-sm text-gray-600">{review.createdAt}</p>
+                                    
+                                    <p className="mt-5 text-sm text-gray-900">{review.createdAt}</p>
                                 </div>
                             </div>
                         </div>

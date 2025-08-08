@@ -38,7 +38,9 @@ const AdminAllProducts = () => {
             return res.data;
         },
         enabled: !!user,
-        staleTime: 1000 * 60,
+        staleTime: 0,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
     });
 
     const products = paginatedData.products || [];
@@ -100,36 +102,46 @@ const AdminAllProducts = () => {
         Swal.fire({
             title: 'Reject Product',
             html: `
-                <div className="flex flex-col gap-4 p-4 -mx-4">
-                    <div className="text-left">
-                        <label for="swal-input-reason" className="text-gray-700 text-sm font-semibold mb-1 block">Rejection Reason <span className="text-red-500">*</span></label>
-                        <input
-                            type="text"
-                            id="swal-input-reason"
-                            className="
-                                w-full p-3 border border-gray-300 rounded-md
-                                text-base text-gray-800
-                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                                transition duration-150 ease-in-out
-                            "
-                            placeholder="e.g., Low quality image, Incomplete description, Prohibited item"
-                        />
-                    </div>
-                    <div className="text-left">
-                        <label for="swal-input-feedback" className="text-gray-700 text-sm font-semibold mb-1 block">Additional Feedback</label>
-                        <input
-                            type="text"
-                            id="swal-input-feedback"
-                            className="
-                                w-full p-3 border border-gray-300 rounded-md
-                                text-base text-gray-800
-                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                                transition duration-150 ease-in-out
-                            "
-                            placeholder="e.g., Suggest adding more details about product dimensions."
-                        />
-                    </div>
-                </div>
+                <div class="flex flex-col gap-6 p-6"> <div class="flex flex-col"> <label for="swal-input-reason" class="
+            text-gray-700 text-sm font-semibold mb-2 block
+            sm:text-base
+        ">
+            Rejection Reason <span class="text-red-500">*</span>
+        </label>
+        <input
+            type="text"
+            id="swal-input-reason"
+            class="
+                w-full p-3 border border-gray-300 rounded-lg
+                text-base text-gray-800
+                focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+                transition duration-150 ease-in-out
+                placeholder-gray-400
+            "
+            placeholder="e.g., Low quality image, Incomplete description, Prohibited item"
+        />
+    </div>
+
+    <div class="flex flex-col"> <label for="swal-input-feedback" class="
+            text-gray-700 text-sm font-semibold mb-2 block
+            sm:text-base
+        ">
+            Additional Feedback
+        </label>
+        <textarea
+            id="swal-input-feedback"
+            rows="4" class="
+                w-full p-3 border border-gray-300 rounded-lg
+                text-base text-gray-800
+                focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+                transition duration-150 ease-in-out
+                resize-y placeholder-gray-400
+            "
+            placeholder="e.g., Suggest adding more details about product dimensions or improving product photography."
+        ></textarea>
+    </div>
+
+</div>
             `,
             icon: 'warning',
             showCancelButton: true,

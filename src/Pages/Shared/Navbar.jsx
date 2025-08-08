@@ -12,17 +12,33 @@ const Navbar = () => {
     const links = (
         <>
             <li>
-                <NavLink to="/">Home</NavLink>
+                <NavLink
+                    className={({ isActive }) =>
+                        isActive ? 'bg-black/10 px-2 py-1 rounded' : 'px-2 py-1 rounded'
+                    }
+                    to="/">Home</NavLink>
             </li>
             <li>
-                <NavLink to="/all-products">All Products</NavLink>
+                <NavLink
+                    className={({ isActive }) =>
+                        isActive ? 'bg-black/10 px-2 py-1 rounded' : 'px-2 py-1 rounded'
+                    }
+                    to="/all-products">All Products</NavLink>
             </li>
             <li>
-                <NavLink to="/about-us">About us</NavLink>
+                <NavLink
+                    className={({ isActive }) =>
+                        isActive ? 'bg-black/10 px-2 py-1 rounded' : 'px-2 py-1 rounded'
+                    }
+                    to="/about-us">About us</NavLink>
             </li>
             {profile && (
                 <li>
-                    <NavLink to="/dashboard/profile">Dashboard</NavLink>
+                    <NavLink
+                        className={({ isActive }) =>
+                            isActive ? 'bg-black/10 px-2 py-1 rounded' : 'px-2 py-1 rounded'
+                        }
+                        to="/dashboard/profile">Dashboard</NavLink>
                 </li>
             )}
             {
@@ -86,8 +102,8 @@ const Navbar = () => {
                 </div>
 
                 {/* Navbar menu content for large screens */}
-                <div className="hidden  lg:block">
-                    <ul className="menu menu-horizontal px-1">
+                <div className="hidden lg:block">
+                    <ul className="flex items-center gap-3 text-sm px-1">
                         {links}
                     </ul>
                 </div>
@@ -95,9 +111,14 @@ const Navbar = () => {
                 {/* Login/Logout buttons on the right */}
                 <div className="hidden lg:flex">
                     {profile ? (
-                        <button onClick={userSignOut} className='btn btn-primary text-white'>
-                            Logout
-                        </button>
+                        <div className="flex items-center gap-4">
+                            <button onClick={() => navigate('/dashboard/profile')} className="relative w-8 h-8">
+                                <img className="rounded-full object-cover w-full h-full" src={profile?.photoURL} alt="User Avatar" />
+                            </button>
+                            <button onClick={userSignOut} className='btn btn-primary text-white'>
+                                Logout
+                            </button>
+                        </div>
                     ) : (
                         <div className="flex items-center gap-2">
                             <button onClick={() => navigate('/login')} className='btn btn-primary text-white'>

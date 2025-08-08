@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { useNavigate } from "react-router";
 
 // import banner from '../../../assets/banner.jpg'
 
@@ -29,6 +30,7 @@ const banners = [
 ];
 
 export default function BannerSlider() {
+  const navigate = useNavigate();
     return (
         <div className="relative w-full h-[600px] overflow-hidden">
       <Swiper
@@ -70,6 +72,7 @@ export default function BannerSlider() {
                 </motion.p>
 
                 <motion.button
+                onClick={()=> navigate('/all-products')}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 0.6 }}

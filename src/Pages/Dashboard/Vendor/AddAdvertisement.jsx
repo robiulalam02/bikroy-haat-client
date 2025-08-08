@@ -7,15 +7,18 @@ import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import useAuth from '../../../Hooks/useAuth'
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 
 const AddAdvertisement = () => {
 
     const { profile } = useAuth();
     const axiosPublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [uploading, setUploading] = useState(false);
     const [imgLoading, setImgLoading] = useState(false);
     const [productImage, setProductImage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleUploadPhoto = async (photo) => {
 
@@ -36,6 +39,10 @@ const AddAdvertisement = () => {
 
     const onSubmit = async (data) => {
 
+        if (!productImage) {
+            return toast.error('please upload an image for advertisement')
+        }
+
         const adsData = {
             ...data,
             image: productImage,
@@ -43,7 +50,8 @@ const AddAdvertisement = () => {
         }
 
         try {
-            const res = await axiosPublic.post('/advertisements', adsData)
+            setIsLoading(true);
+            const res = await axiosSecure.post('/advertisements', adsData)
 
             if (res.data.insertedId) {
                 toast.success('Advertisement submit successful');
@@ -53,7 +61,10 @@ const AddAdvertisement = () => {
                 toast.error('Failed! Something went wrong!')
             }
         } catch (error) {
+            setIsLoading(false);
             toast.error(error.message)
+        } finally{
+            setIsLoading(false);
         }
     };
 
@@ -117,7 +128,7 @@ const AddAdvertisement = () => {
                     disabled={uploading}
                     className="w-full bg-primary text-white py-3 rounded hover:bg-primary/90 transition disabled:opacity-50"
                 >
-                    {uploading ? "Submitting..." : "Submit Advertisement"}
+                    {isLoading ? "Submitting..." : "Submit Advertisement"}
                 </button>
             </form>
         </div>

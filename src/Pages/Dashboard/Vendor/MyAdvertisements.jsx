@@ -36,7 +36,7 @@ const MyAdvertisements = () => {
 
     const handleUpdate = async (data) => {
         try {
-            const res = await axiosPublic.put(`/advertisements/${selectedAd?._id}`, data);
+            const res = await axiosSecure.put(`/advertisements/${selectedAd?._id}`, data);
 
             if (res.data.modifiedCount) {
                 toast.success("Ad Updated Successfully!");

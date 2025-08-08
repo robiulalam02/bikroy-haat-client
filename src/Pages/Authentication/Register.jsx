@@ -65,7 +65,7 @@ const Register = () => {
       if (firebasePromise.user) {
         updateUserProfile(name, profilePhoto)
         // insert user data to DB
-        const userPromise = await axios.post('http://localhost:3000/users', userData)
+        const userPromise = await axiosPublic.post('/users', userData)
 
         if (userPromise.data.insertedId) {
           Swal.fire({
@@ -79,9 +79,10 @@ const Register = () => {
           navigate('/')
         }
       }
-    } catch {
+    } catch (error) {
       setLoading(false);
-      console.log('user registration failed!')
+      console.log('user registration failed!');
+      console.log(error)
     } finally {
       setLoading(false);
     }

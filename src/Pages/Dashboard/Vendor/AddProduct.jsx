@@ -1,20 +1,22 @@
 import React, { useState } from 'react'
 import useAuth from '../../../Hooks/useAuth'
-import { useForm, useFieldArray, Controller  } from 'react-hook-form';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { uploadImageToImgBB } from '../../../API/utils';
 import Spinner from '../../../Components/Loaders/Spinner';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
 
 const AddProduct = () => {
 
-    const axiosPublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const { profile } = useAuth();
     const [imgLoading, setImgLoading] = useState(false);
     const [productImage, setProductImage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleUploadPhoto = async (photo) => {
 
@@ -58,6 +60,9 @@ const AddProduct = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     const onSubmit = async (data) => {
+        if (!productImage) {
+            return toast.error('please upload a product Image')
+        }
         const product = {
             vendorEmail: profile?.email,
             vendorName: profile?.displayName,
@@ -76,7 +81,8 @@ const AddProduct = () => {
         };
 
         try {
-            const res = await axiosPublic.post("/products", product);
+            setIsLoading(true);
+            const res = await axiosSecure.post("/products", product);
             if (res.data.insertedId) {
                 toast.success("Product submitted successfully!");
                 reset();
@@ -84,7 +90,11 @@ const AddProduct = () => {
                 toast.error("Something went wrong!");
             }
         } catch (error) {
+            setIsLoading(false);
+            toast.error(error.message);
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -156,6 +166,7 @@ const AddProduct = () => {
                             placeholder="e.g., Onion"
                             className="w-full border-b border-gray-300 focus:outline-none py-2"
                         />
+                        {errors.itemName && <p className="text-red-500 text-sm">Item name is required</p>}
                     </div>
 
                     {/* Image Upload */}
@@ -185,6 +196,7 @@ const AddProduct = () => {
                             placeholder="e.g., 30"
                             className="w-full border-b border-gray-300 focus:outline-none py-2"
                         />
+                        {errors.pricePerUnit && <p className="text-red-500 text-sm">require product price per unit</p>}
                     </div>
 
                     {/* Item Description (optional) */}
@@ -207,32 +219,58 @@ const AddProduct = () => {
                                     key={field.id}
                                     className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center border border-gray-200 p-4 rounded-lg"
                                 >
+                                    {/* Date Picker Field */}
                                     <div>
                                         <label className="block text-xs text-gray-500 mb-1">Date</label>
                                         <Controller
                                             control={control}
                                             name={`prices.${index}.date`}
-                                            rules={{ required: true }}
+                                            // Add validation rule: required
+                                            rules={{ required: "Date is required" }}
                                             render={({ field }) => (
                                                 <DatePicker
                                                     selected={field.value ? new Date(field.value) : null}
-                                                    onChange={(date) => field.onChange(date)}
+                                                    // Ensure date is stored as YYYY-MM-DD string for consistency
+                                                    onChange={(date) => field.onChange(date?.toISOString().split('T')[0] || null)}
                                                     dateFormat="yyyy-MM-dd"
                                                     placeholderText="Select date"
-                                                    className="w-full border-b border-gray-300 focus:outline-none py-2"
+                                                    className={`w-full border-b py-2 focus:outline-none ${errors.prices?.[index]?.date ? 'border-red-500' : 'border-gray-300'
+                                                        }`}
                                                 />
                                             )}
                                         />
+                                        {/* Display error message for date */}
+                                        {errors.prices?.[index]?.date && (
+                                            <p className="text-red-500 text-sm mt-1">
+                                                {errors.prices[index].date.message}
+                                            </p>
+                                        )}
                                     </div>
+
+                                    {/* Price Field */}
                                     <div>
                                         <label className="block text-xs text-gray-500 mb-1">Price (৳)</label>
                                         <input
                                             type="number"
                                             step="0.01"
                                             placeholder="e.g. 35"
-                                            {...register(`prices.${index}.price`, { required: true })}
-                                            className="w-full border-b border-gray-300 focus:outline-none py-2"
+                                            // Add validation rules: required and minimum value
+                                            {...register(`prices.${index}.price`, {
+                                                required: "Price is required",
+                                                min: {
+                                                    value: 0.01,
+                                                    message: "Price must be greater than 0"
+                                                }
+                                            })}
+                                            className={`w-full border-b py-2 focus:outline-none ${errors.prices?.[index]?.price ? 'border-red-500' : 'border-gray-300'
+                                                }`}
                                         />
+                                        {/* Display error message for price */}
+                                        {errors.prices?.[index]?.price && (
+                                            <p className="text-red-500 text-sm mt-1">
+                                                {errors.prices[index].price.message}
+                                            </p>
+                                        )}
                                     </div>
 
                                     {index > 2 && (
@@ -249,6 +287,13 @@ const AddProduct = () => {
                                 </div>
                             ))}
                         </div>
+
+                        {/* General error message for minimum entries */}
+                        {errors.prices && fields.length < 3 && (
+                            <p className="text-red-500 text-sm mt-2">
+                                Please add at least 3 previous price entries.
+                            </p>
+                        )}
 
                         <div className="mt-4">
                             <button
@@ -268,7 +313,12 @@ const AddProduct = () => {
                         type="submit"
                         className="w-full bg-primary text-white py-3 rounded hover:bg-primary/90 transition"
                     >
-                        Submit Product
+                        {
+                            isLoading ?
+                                <Spinner />
+                                :
+                                'Submit Product'
+                        }
                     </button>
                 </form>
 

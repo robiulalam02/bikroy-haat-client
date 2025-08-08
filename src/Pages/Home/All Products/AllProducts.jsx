@@ -237,6 +237,7 @@ const AllProducts = () => {
 
                     <div className="mt-2 flex items-center gap-2">
                       <h3 className='text-pink-400 font-medium'>{product.marketName}</h3>
+                      <span className='text-xs text-gray-500'>({product.vendorName})</span>
                     </div>
 
                     <ul className="mt-2 flex items-center gap-4">

@@ -8,6 +8,8 @@ import { FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
 import { Helmet } from 'react-helmet-async';
+import { FcInfo } from "react-icons/fc";
+
 
 const MyOrders = () => {
 
@@ -86,7 +88,15 @@ const MyOrders = () => {
                                                 {order.amount} Taka
                                             </td>
                                             <td className="whitespace-no-wrap py-4 text-right text-sm text-gray-600 sm:px-3 lg:text-left">
-                                                0{order.quantity}
+                                                {
+                                                    order.quantity > 9 ?
+                                                        `${order.quantity}` :
+                                                        `0${order.quantity}`
+
+                                                }
+                                            </td>
+                                            <td className="whitespace-no-wrap py-4 text-right text-gray-600 sm:px-3 lg:text-left flex items-center justify-center table-cell text-sm md:hidden">
+                                                <button onClick={() => navigate(`/product-details/${order.productId}`)} className='text-blue-600'>Details</button>
                                             </td>
 
                                             <td className="whitespace-no-wrap hidden py-4 text-sm font-normal text-gray-600 sm:px-3 lg:table-cell">

@@ -90,24 +90,24 @@ const MyProducts = () => {
                     <div className="mt-6 overflow-x-auto rounded-xl bg-white px-6 shadow lg:px-4">
                         <table className="min-w-full table-auto">
                             <thead className="border-b">
-                                <td className="whitespace-normal py-4 text-sm font-semibold text-gray-800 sm:px-3 ">
+                                <th className="whitespace-normal py-4 text-sm font-semibold text-gray-800 sm:px-3 ">
                                     Item Name
                                     <svg xmlns="http://www.w3.org/2000/svg" className="float-right mt-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                                     </svg>
-                                </td>
+                                </th>
 
-                                <td className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">Market Name</td>
-                                <td className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">Date</td>
-                                <td className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">
+                                <th className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">Market Name</th>
+                                <th className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">Date</th>
+                                <th className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">
                                     Price
                                     <svg xmlns="http://www.w3.org/2000/svg" className="float-right mt-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
                                     </svg>
-                                </td>
+                                </th>
 
-                                <td className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">Status</td>
-                                <td className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">Action</td>
+                                <th className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">Status</th>
+                                <th className="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-3">Action</th>
                             </thead>
 
                             <tbody className="bg-white lg:border-gray-300">

@@ -126,7 +126,7 @@ const ManageWatchlist = () => {
                                                 <div className="flex items-center gap-4">
                                                     {/* Update Button */}
                                                     <button
-                                                        onClick={() => navigate(`/dashboard/update-product/${product._id}`)}
+                                                        onClick={() => navigate('/all-products')}
                                                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition duration-200 text-xs"
                                                     >
                                                         <RiFunctionAddLine className="text-lg" />

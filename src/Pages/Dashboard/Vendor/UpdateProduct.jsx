@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
@@ -12,12 +12,15 @@ import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import Loading from '../../../Components/Loaders/Loading';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
+import useUserRole from '../../../Hooks/useUserRole';
 
 const UpdateProduct = () => {
     const { id } = useParams();
     const { profile } = useAuth();
     const [imgLoading, setImgLoading] = useState(false);
     const [productImage, setProductImage] = useState("");
+    const navigate = useNavigate();
+    const {isVendor, isAdmin} = useUserRole();
 
     const axiosSecure = useAxiosSecure();
     const axiosPublic = useAxiosPublic();
@@ -71,11 +74,16 @@ const UpdateProduct = () => {
         }
 
         try {
-            const res = await axiosPublic.put(`/products/${id}`, updatedProduct);
+            const res = await axiosSecure.put(`/products/${id}`, updatedProduct);
 
             if (res.data.modifiedCount) {
                 toast.success("Product Updated Successfully!");
                 e.target.reset();
+                if (isVendor) {
+                    navigate('/dashboard/my-products')
+                } else{
+                    navigate('/dashboard/all-products')
+                }
             } else {
                 toast.error("Something went wrong!");
             }

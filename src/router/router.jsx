@@ -72,11 +72,15 @@ export const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    Component: Dashboard,
+    element: <PrivateRoute>
+      <Dashboard />
+    </PrivateRoute>,
     children: [
       {
         path: 'profile',
-        Component: DashboardHome
+        element: <PrivateRoute>
+          <DashboardHome />
+        </PrivateRoute>
       },
       {
         path: 'add-product',
@@ -97,7 +101,7 @@ export const router = createBrowserRouter([
       {
         path: 'update-product/:id',
         element: <PrivateRoute>
-            <UpdateProduct />
+          <UpdateProduct />
         </PrivateRoute>
       },
       {
