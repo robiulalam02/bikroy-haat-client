@@ -70,9 +70,9 @@ const Navbar = () => {
     };
 
     return (
-        <>
+        <nav className='bg-gradient-to-r from-base-200 via-[#d8ffa1] to-base-100 shadow-sm w-full'>
             {/* Main Navbar Content */}
-            <div className="navbar bg-gradient-to-r from-base-200 via-[#d8ffa1] to-base-100 shadow-sm w-full flex items-center justify-between">
+            <div className="navbar flex items-center justify-between max-w-screen-2xl mx-auto px-4">
                 <div className="flex-none lg:hidden">
                     {/* Drawer toggle button for small screens */}
                     <button
@@ -166,7 +166,7 @@ const Navbar = () => {
                     aria-hidden="true"
                 ></div>
             )}
-        </>
+        </nav>
     );
 };
 
