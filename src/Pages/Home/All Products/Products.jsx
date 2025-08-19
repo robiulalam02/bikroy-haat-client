@@ -78,7 +78,7 @@ export default function Products() {
             </motion.h2>
 
             <motion.div
-                className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 justify-center max-w-7xl mx-auto"
+                className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 justify-center max-w-screen-2xl mx-auto"
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
