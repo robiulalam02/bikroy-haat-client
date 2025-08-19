@@ -8,6 +8,7 @@ import SeasonalPicks from '../SeasonalPicks/SeasonalPicks'
 import { AuthContext } from '../../../Providers/AuthContext'
 import { Helmet } from 'react-helmet-async'
 import RecentProducts from '../RecentProducts/RecentProducts'
+import Subscribe from '../Subscribe/Subscribe'
 
 const Home = () => {
 
@@ -22,6 +23,7 @@ const Home = () => {
       <Advertisements />
       <SeasonalPicks />
       <BuyerTips />
+      <Subscribe />
     </div>
   )
 }
