@@ -7,6 +7,7 @@ import ReviewSlider from '../ReviewSlider/ReviewSlider'
 import SeasonalPicks from '../SeasonalPicks/SeasonalPicks'
 import { AuthContext } from '../../../Providers/AuthContext'
 import { Helmet } from 'react-helmet-async'
+import RecentProducts from '../RecentProducts/RecentProducts'
 
 const Home = () => {
 
@@ -17,8 +18,7 @@ const Home = () => {
       </Helmet>
       <BannerSlider />
       <Products />
-      
-      
+      <RecentProducts />
       <Advertisements />
       <SeasonalPicks />
       <BuyerTips />

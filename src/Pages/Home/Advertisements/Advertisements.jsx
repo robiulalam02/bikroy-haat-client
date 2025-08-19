@@ -22,14 +22,14 @@ export default function Advertisements() {
   });
 
   return (
-    <section className="bg-gray-50 py-10 px-4 md:px-10 lg:px-20 h-[500px]">
+    <section className="bg-gray-50 py-10 px-4 md:px-10 lg:px-20 h-[500px]s">
       <div className="max-w-screen-2xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-3xl md:text-4xl mb-6 font-gliker">
+          className="text-3xl md:text-4xl mb-6 font-gliker text-center">
           <span className="text-primary">Promos</span> for you
         </motion.h2>
         <Swiper

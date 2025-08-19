@@ -72,7 +72,7 @@ const AddProduct = () => {
             itemName: data.itemName,
             status: "pending",
             image: productImage,
-            pricePerUnit: data.pricePerUnit,
+            pricePerUnit: parseFloat(data.pricePerUnit),
             prices: data.prices.map(p => ({
                 date: p.date,
                 price: parseFloat(p.price)
