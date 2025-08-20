@@ -23,7 +23,7 @@ const tips = [
 
 export default function BuyerTips() {
   return (
-    <section className="py-12 min-h-[600px] px-4 md:px-10 lg:px-20 bg-white">
+    <section className="py-12 min-h-[600px] px-4 bg-white">
       <div className="max-w-screen-2xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, x: -50 }} // Changed heading animation to slide from left
@@ -35,7 +35,7 @@ export default function BuyerTips() {
             duration: 0.7,
           }}
           viewport={{ once: true }}
-          className="text-4xl text-gray-800 mb-10 font-gliker text-center md:text-left" // Added text-center for small screens
+          className="text-4xl text-gray-800 mb-10 font-gliker text-center" // Added text-center for small screens
         >
           <span className="text-primary">Smart</span> Buyer Tips
         </motion.h2>
@@ -43,9 +43,10 @@ export default function BuyerTips() {
         <div className="grid md:grid-cols-3 gap-6 mt-20">
           {tips.map((tip, index) => (
             <div
-            key={index}
+              key={index}
               data-aos="fade-up"
-              className="p-6 rounded-xl hover:shadow-lg transition flex flex-col items-center text-center" // Added flex for centering content
+              className="p-6 rounded-xl border border-primary/20 shadow shadow-primary/10 flex flex-col items-center text-center"
+            // Added flex for centering content
             >
               {/* Content wrapper for staggered text */}
               <div
@@ -62,7 +63,7 @@ export default function BuyerTips() {
                   {tip.title}
                 </h3>
                 <p
-                  className="text-gray-600 text-sm"
+                  className="text-gray-600 text-sm px-10"
                 >
                   {tip.desc}
                 </p>

@@ -9,6 +9,7 @@ import { AuthContext } from '../../../Providers/AuthContext'
 import { Helmet } from 'react-helmet-async'
 import RecentProducts from '../RecentProducts/RecentProducts'
 import Subscribe from '../Subscribe/Subscribe'
+import TopSeller from '../TopSeller/TopSeller'
 
 const Home = () => {
 
@@ -21,6 +22,7 @@ const Home = () => {
       <Products />
       <RecentProducts />
       <Advertisements />
+      <TopSeller />
       <SeasonalPicks />
       <BuyerTips />
       <Subscribe />

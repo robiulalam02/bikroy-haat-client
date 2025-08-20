@@ -70,9 +70,9 @@ const Navbar = () => {
     };
 
     return (
-        <nav className='bg-gradient-to-r from-base-200 via-[#d8ffa1] to-base-100 shadow-sm w-full'>
+        <nav className='bg-gradient-to-r from-base-200 via-[#d8ffa1] to-base-100 shadow-sm w-full '>
             {/* Main Navbar Content */}
-            <div className="navbar flex items-center justify-between max-w-screen-2xl mx-auto px-4">
+            <div className="w-full flex items-center justify-between max-w-screen-2xl mx-auto p-0 navbar">
                 <div className="flex-none lg:hidden">
                     {/* Drawer toggle button for small screens */}
                     <button
@@ -97,7 +97,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Logo for both small and large screens */}
-                <div className="px-2 mx-2">
+                <div className="px-2 mx-2 md:px-0 md:mx-0">
                     <Logo />
                 </div>
 

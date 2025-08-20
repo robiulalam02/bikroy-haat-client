@@ -52,7 +52,7 @@ export default function BannerSlider() {
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20 z-10" />
 
               {/* Content */}
-              <div className="max-w-screen-2xl mx-auto absolute inset-0 flex flex-col justify-center items-start px-6 md:px-16 z-20">
+              <div className="max-w-screen-2xl mx-auto absolute inset-0 flex flex-col justify-center items-start px-4 z-20">
                 <motion.h1
                   initial={{ opacity: 0, x: -40 }}
                   animate={{ opacity: 1, x: 0 }}

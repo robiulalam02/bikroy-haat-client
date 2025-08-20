@@ -16,7 +16,7 @@ const RecentProducts = () => {
     });
 
     return (
-        <section className="py-12 px-4 md:px-10 lg:px-20 min-h-[700px] bg-white">
+        <section className="py-12 px-4 min-h-[700px] bg-white">
             <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}

@@ -115,7 +115,7 @@ const AllProducts = () => {
         animate="in"
         exit="out"
         transition={pageTransition}
-        className='max-w-screen-xl mx-auto px-4'>
+        className='max-w-screen-2xl mx-auto px-4'>
         <h1 className="text-3xl font-bold text-center text-gray-800 my-8">All Products</h1>
 
         {/* Filter and Sorting Options Section */}
@@ -190,7 +190,7 @@ const AllProducts = () => {
             No products found matching your criteria.
           </p>
         ) : (
-          <div className='max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+          <div className='max-w-screen-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
             {
               products?.map(product => (
                 <div data-aos="zoom-in" data-aos-duration="500" key={product._id} className="rounded-lg bg-white p-6 shadow">
