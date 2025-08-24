@@ -15,27 +15,25 @@ const TopSeller = () => {
         }
     });
 
-    console.log(sellers)
-
     return (
-        <section className="py-12 px-4  min-h-[400px] bg-white">
+        <section className="py-12 px-4 bg-white">
             <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="text-4xl text-center text-gray-800 font-gliker"
+                className="text-4xl text-center mb-10 text-gray-800 font-gliker"
             >
                 <span className="text-primary">Top Sellers</span> this Month
             </motion.h2>
 
-            <div className='grid grid-cols-5 mt-20'>
+            <div className='grid grid-cols-1 md:grid-cols-5 gap-1 max-w-screen-2xl mx-auto'>
                 {
                     sellers?.map(seller=> (
-                        <div className='flex flex-col items-center gap-4'>
+                        <div className='flex flex-col items-center gap-4 p-4'>
                             <img src="store.png" className='w-14' alt="" />
                             <h3 className='text-xl font-semibold'>{seller._id.marketName}</h3>
-                            <p className='font-medium text-lg'>Total Sell: {seller.totalQuantity > 10 ? seller.totalQuantity : `0${seller.totalQuantity}`}</p>
+                            <p className='font-medium text-lg'>Total Sells: {seller.totalQuantity > 10 ? seller.totalQuantity : `0${seller.totalQuantity}`}</p>
                         </div>
                     ))
                 }

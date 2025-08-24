@@ -32,13 +32,20 @@ const Navbar = () => {
                     }
                     to="/about-us">About us</NavLink>
             </li>
+            <li>
+                <NavLink
+                    className={({ isActive }) =>
+                        isActive ? 'bg-black/10 px-2 py-1 rounded' : 'px-2 py-1 rounded'
+                    }
+                    to="/contact-us">Contact</NavLink>
+            </li>
             {profile && (
                 <li>
                     <NavLink
                         className={({ isActive }) =>
                             isActive ? 'bg-black/10 px-2 py-1 rounded' : 'px-2 py-1 rounded'
                         }
-                        to="/dashboard/profile">Dashboard</NavLink>
+                        to="/dashboard/home">Dashboard</NavLink>
                 </li>
             )}
             {

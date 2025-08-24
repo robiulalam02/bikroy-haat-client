@@ -32,35 +32,6 @@ export default function Products() {
         },
     };
 
-    // Variants for individual product cards
-    const cardVariants = {
-        hidden: { opacity: 0, y: 50 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                type: "spring",
-                stiffness: 100,
-                damping: 10,
-            },
-        },
-    };
-
-    // Variants for the "View Details" button
-    const buttonVariants = {
-        hidden: { opacity: 0, x: -20 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {
-                delay: 0.3, // Delay button animation after card appears
-                type: "spring",
-                stiffness: 150,
-                damping: 12,
-            },
-        },
-    };
-
     if (isLoading || isPending) {
         return <Loading />
     }
@@ -77,7 +48,9 @@ export default function Products() {
                 <span className="text-primary">Featured</span> Products
             </motion.h2>
 
-            <motion.div
+            <div
+
+                data-aos="fade-up-right"
                 className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 justify-center max-w-screen-2xl mx-auto"
                 variants={containerVariants}
                 initial="hidden"
@@ -85,10 +58,9 @@ export default function Products() {
                 viewport={{ once: true, amount: 0.3 }} // Animate once when 30% of the element is in view
             >
                 {products?.map(product => (
-                    <motion.div
+                    <div
                         key={product._id} // Make sure each product has a unique key
                         className="bg-white rounded-lg overflow-hidden shadow-lg ring ring-primary/40 max-w-md"
-                        variants={cardVariants}
                     >
                         <div className="relative">
                             <div className="h-46 w-full overflow-hidden">
@@ -99,24 +71,23 @@ export default function Products() {
                             </div>
                         </div>
                         <div className="p-4">
-                            <h3 className="text-lg font-medium mb-2">{product.marketName}</h3>
+                            <h3 className="text-lg font-medium mb-2">{product.itemName}</h3>
                             <div>
-                                <p>Item name: <span className="text-gray-600">{product.itemName}</span></p>
+                                <p><span className="text-gray-600">{product.marketName}</span></p>
                             </div>
                             <div className="flex items-center justify-between mt-3">
                                 <p className="font-semibold text-lg"><span className="text-green-600">{product.pricePerUnit}৳</span> /kg</p>
-                                <motion.button
+                                <button
                                     onClick={() => navigate(`/product-details/${product._id}`)}
                                     className="btn btn-primary text-white font-bold py-2 px-4 rounded"
-                                    variants={buttonVariants}
                                 >
                                     View Details
-                                </motion.button>
+                                </button>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 ))}
-            </motion.div>
+            </div>
         </section>
     )
 

@@ -26,6 +26,11 @@ import VendorRoute from "../routes/VendorRoute";
 import AllProducts from "../Pages/Home/All Products/AllProducts";
 import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
 import ErrorPage from "../Components/Error Page/ErrorPage";
+import AboutUs from "../Pages/AboutUs/AboutUs";
+import Profile from "../Pages/Dashboard/Profile/Profile";
+import ContactUs from "../Pages/ContactUs/ContactUs";
+import FAQs from "../Pages/FAQs/FAQs";
+import PrivacyPolicy from "../Pages/PrivacyPolicy/PrivacyPolicy";
 
 export const router = createBrowserRouter([
   {
@@ -53,7 +58,23 @@ export const router = createBrowserRouter([
       {
         path: '/unauthorized',
         Component: UnauthorizedPage
-      }
+      },
+      {
+        path: '/about-us',
+        Component: AboutUs
+      },
+      {
+        path: '/contact-us',
+        Component: ContactUs
+      },
+      {
+        path: '/FAQs',
+        Component: FAQs
+      },
+      {
+        path: '/privacy-policy',
+        Component: PrivacyPolicy
+      },
     ]
   },
   {
@@ -77,9 +98,13 @@ export const router = createBrowserRouter([
     </PrivateRoute>,
     children: [
       {
+        path: 'home',
+        Component: DashboardHome
+      },
+      {
         path: 'profile',
         element: <PrivateRoute>
-          <DashboardHome />
+          <Profile />
         </PrivateRoute>
       },
       {

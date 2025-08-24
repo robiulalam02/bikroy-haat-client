@@ -33,7 +33,6 @@ const Register = () => {
       }
     } catch {
       setImgLoading(false)
-      console.log('image upload failed')
     } finally {
       setImgLoading(false)
     }

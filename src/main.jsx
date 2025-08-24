@@ -10,6 +10,8 @@ import Aos from 'aos'
 import 'aos/dist/aos.css';
 import { AnimatePresence } from 'framer-motion'
 import { HelmetProvider } from 'react-helmet-async'
+import 'flowbite';
+
 
 const queryClient = new QueryClient();
 

@@ -1,13 +1,14 @@
 import React from 'react'
 import Logo from '../../Components/Logo/Logo'
+import { Link } from 'react-router'
 
 const Footer = () => {
     return (
 
         <footer className="bg-gradient-to-r from-base-200 via-[#d8ffa1] to-base-100">
-            <div className="max-w-screen-xl px-4 py-16 mx-auto sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                    <div>
+            <div className="max-w-screen-2xl px-4 py-16 mx-auto">
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                    <div className=''>
                         <Logo />
                         <p className="max-w-xs mt-4 text-sm text-gray-600">
                             We Track the Prices, You Enjoy the Savings. Your Essential Grocery Companion.
@@ -45,19 +46,34 @@ const Footer = () => {
                             </a> */}
                         </div>
                     </div>
-                    <div className="grid gap-8 lg:col-span-2 grid-cols-2  lg:grid-cols-4">
+                    <div className="grid gap-8 grid-cols-2  lg:grid-cols-3">
                         <div>
                             <p className="font-medium">
                                 Company
                             </p>
                             <nav className="flex flex-col mt-4 space-y-2 text-sm text-gray-500">
-                                <a className="hover:opacity-75" > About </a>
-                                <a className="hover:opacity-75" > Meet the Team </a>
+                                <Link to="/about-us" className="hover:opacity-75" > About </Link>
+                                <Link to="/contact-us" className="hover:opacity-75" > Contact </Link>
+                                <Link to="/FAQs" className="hover:opacity-75" > FAQs </Link>
+                                {/* <a className="hover:opacity-75" > Meet the Team </a>
                                 <a className="hover:opacity-75" > History </a>
-                                <a className="hover:opacity-75" > Careers </a>
+                                <a className="hover:opacity-75" > Careers </a> */}
                             </nav>
                         </div>
                         <div>
+                            <p className="font-medium">
+                                Services
+                            </p>
+                            <nav className="flex flex-col mt-4 space-y-2 text-sm text-gray-500">
+                                <Link to="/about-us" className="hover:opacity-75" > Buy Products </Link>
+                                <Link to="/contact-us" className="hover:opacity-75" > Compare Price </Link>
+                                <Link to="/FAQs" className="hover:opacity-75" > Become a Vendor </Link>
+                                {/* <a className="hover:opacity-75" > Meet the Team </a>
+                                <a className="hover:opacity-75" > History </a>
+                                <a className="hover:opacity-75" > Careers </a> */}
+                            </nav>
+                        </div>
+                        {/* <div>
                             <p className="font-medium">
                                 Services
                             </p>
@@ -68,26 +84,23 @@ const Footer = () => {
                                 <a className="hover:opacity-75" > HR Consulting </a>
                                 <a className="hover:opacity-75" > SEO Optimisation </a>
                             </nav>
-                        </div>
-                        <div>
+                        </div> */}
+                        {/* <div>
                             <p className="font-medium">
                                 Helpful Links
                             </p>
                             <nav className="flex flex-col mt-4 space-y-2 text-sm text-gray-500">
-                                <a className="hover:opacity-75" > Contact </a>
-                                <a className="hover:opacity-75" > FAQs </a>
-                                <a className="hover:opacity-75" > Live Chat </a>
+
                             </nav>
-                        </div>
+                        </div> */}
                         <div>
                             <p className="font-medium">
                                 Legal
                             </p>
                             <nav className="flex flex-col mt-4 space-y-2 text-sm text-gray-500">
-                                <a className="hover:opacity-75" > Privacy Policy </a>
-                                <a className="hover:opacity-75" > Terms &amp; Conditions </a>
+                                <Link to="/privacy-policy" className="hover:opacity-75" > Privacy Policy </Link>
+                                <Link to="/privacy-policy" className="hover:opacity-75" > Terms &amp; Conditions </Link>
                                 <a className="hover:opacity-75" > Returns Policy </a>
-                                <a className="hover:opacity-75" > Accessibility </a>
                             </nav>
                         </div>
                     </div>

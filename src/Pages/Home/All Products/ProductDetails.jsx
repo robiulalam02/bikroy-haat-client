@@ -20,7 +20,6 @@ import useUserRole from '../../../Hooks/useUserRole'
 const ProductDetails = () => {
   const { id } = useParams();
   const { profile } = useAuth();
-  console.log(profile.photoURL)
   const [quantity, setQuantity] = useState(1);
   const { isUser } = useUserRole();
 

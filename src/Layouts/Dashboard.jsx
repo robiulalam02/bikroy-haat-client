@@ -14,6 +14,7 @@ import { RiImageAddLine, RiVideoAiLine } from 'react-icons/ri'
 import { PiTrendUp } from 'react-icons/pi'
 import { IoReceiptOutline } from "react-icons/io5";
 import { AnimatePresence, motion } from 'framer-motion';
+import { GoArrowLeft } from 'react-icons/go'
 
 const Dashboard = () => {
 
@@ -36,22 +37,33 @@ const Dashboard = () => {
 
     const links = <>
         {/* Changed h-14 to h-16 */}
-        <li className='hover:bg-base-200 rounded-full'>
+        <li className='hover:text-primary '>
             <NavLink
                 to="/"
                 className={({ isActive }) =>
-                    isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                    isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                 }
             >
-                <HiOutlineHome className='text-lg' />
+                <GoArrowLeft className='text-lg' />
                 Back Home
             </NavLink>
         </li>
-        <li className='hover:bg-base-200 rounded-full'>
+        <li className='hover:bg-base-200 '>
+            <NavLink
+                to="/dashboard/home"
+                className={({ isActive }) =>
+                    isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                }
+            >
+                <HiOutlineHome className='text-lg' />
+                Dashboard
+            </NavLink>
+        </li>
+        <li className='hover:bg-base-200 '>
             <NavLink
                 to="/dashboard/profile"
                 className={({ isActive }) =>
-                    isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                    isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                 }
             >
                 <HiOutlineUser className='text-lg' />
@@ -61,44 +73,44 @@ const Dashboard = () => {
         {
             isVendor && !isLoading &&
             <>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/add-product"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <TbLayoutGridAdd className='text-lg' />
                         Add Product
                     </NavLink>
                 </li>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/my-products"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <BsBoxSeam className='' />
                         My Product
                     </NavLink>
                 </li>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/add-advertisements"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <RiImageAddLine className='text-lg' />
                         Add Advertisement
                     </NavLink>
                 </li>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/my-advertisements"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <RiVideoAiLine className='text-lg' />
@@ -110,33 +122,33 @@ const Dashboard = () => {
         {
             isUser && !isLoading &&
             <>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/view-price-trends"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <PiTrendUp className='text-lg' />
                         View Price Trends
                     </NavLink>
                 </li>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/manage-watchlist"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <BsArrowLeftRight />
                         Manage Watchlist
                     </NavLink>
                 </li>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/my-orders"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <IoReceiptOutline className='' />
@@ -148,44 +160,44 @@ const Dashboard = () => {
         {
             isAdmin && !isLoading &&
             <>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/all-users"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 py-3 rounded-full gap-1' : 'flex items-center px-4 py-3 rounded-full gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4 py-3  gap-1' : 'flex items-center px-4 py-3  gap-1'
                         }
                     >
                         <HiOutlineUsers className='text-lg' />
                         All Users
                     </NavLink>
                 </li>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/all-products"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 py-3 rounded-full gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4 py-3  gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <BsBoxSeam className='' />
                         All Products
                     </NavLink>
                 </li>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/all-ads"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 rounded-full py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4  py-3 gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <TfiLayoutMediaCenterAlt className='' />
                         All Advertisements
                     </NavLink>
                 </li>
-                <li className='hover:bg-base-200 rounded-full'>
+                <li className='hover:bg-base-200 '>
                     <NavLink
                         to="/dashboard/all-orders"
                         className={({ isActive }) =>
-                            isActive ? 'bg-base-200 text-black flex items-center px-4 py-3 rounded-full gap-1' : 'flex items-center px-4 py-3 gap-1'
+                            isActive ? 'bg-base-200 text-black flex items-center px-4 py-3  gap-1' : 'flex items-center px-4 py-3 gap-1'
                         }
                     >
                         <BsClipboard2Check className='' />
@@ -219,6 +231,7 @@ const Dashboard = () => {
                         className='min-h-screen'>
                         <Outlet />
                     </motion.main>
+                    <Footer />
                 </div>
 
                 <div className="drawer-side bg-none lg:bg-white md:border-r md:border-gray-200">
@@ -226,14 +239,14 @@ const Dashboard = () => {
                     {/* <div className='p-4'>
                         <Logo />
                     </div> */}
-                    <ul className="lg:h-80 h-full w-80 p-4 flex flex-col bg-white">
+                    <ul className="lg:h-80 h-full w-80 flex flex-col bg-white">
                         {/* Sidebar content here */}
                         {links}
                     </ul>
                 </div>
 
             </div>
-            <Footer />
+            
         </div>
     )
 }

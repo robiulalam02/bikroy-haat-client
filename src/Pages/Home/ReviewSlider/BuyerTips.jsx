@@ -40,7 +40,7 @@ export default function BuyerTips() {
           <span className="text-primary">Smart</span> Buyer Tips
         </motion.h2>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-20">
+        <div className="grid md:grid-cols-3 gap-6">
           {tips.map((tip, index) => (
             <div
               key={index}

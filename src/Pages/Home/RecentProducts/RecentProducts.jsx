@@ -2,10 +2,12 @@ import React from 'react'
 import { motion } from "framer-motion";
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 
 const RecentProducts = () => {
 
     const axiosPublic = useAxiosPublic();
+    const navigate = useNavigate();
 
     const { data: products = [], isLoading, isPending } = useQuery({
         queryKey: ['recent-products'],
@@ -28,17 +30,18 @@ const RecentProducts = () => {
             </motion.h2>
 
             <motion.div
+                data-aos="fade-up-left"
                 className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 justify-center max-w-screen-2xl mx-auto"
-                // variants={containerVariants}
-                // initial="hidden"
-                // whileInView="visible"
-                // viewport={{ once: true, amount: 0.3 }} // Animate once when 30% of the element is in view
+            // variants={containerVariants}
+            // initial="hidden"
+            // whileInView="visible"
+            // viewport={{ once: true, amount: 0.3 }} // Animate once when 30% of the element is in view
             >
                 {products?.map(product => (
                     <motion.div
                         key={product._id} // Make sure each product has a unique key
                         className="bg-white rounded-lg overflow-hidden shadow-lg ring ring-primary/40 max-w-md"
-                        // variants={cardVariants}
+                    // variants={cardVariants}
                     >
                         <div className="relative">
                             <div className="h-46 w-full overflow-hidden">
@@ -49,19 +52,19 @@ const RecentProducts = () => {
                             </div>
                         </div>
                         <div className="p-4">
-                            <h3 className="text-lg font-medium mb-2">{product.marketName}</h3>
+                            <h3 className="text-lg font-medium mb-2">{product.itemName}</h3>
                             <div>
-                                <p>Item name: <span className="text-gray-600">{product.itemName}</span></p>
+                                <p><span className="text-gray-600">{product.marketName}</span></p>
                             </div>
                             <div className="flex items-center justify-between mt-3">
                                 <p className="font-semibold text-lg"><span className="text-green-600">{product.pricePerUnit}৳</span> /kg</p>
-                                <motion.button
+                                <button
                                     onClick={() => navigate(`/product-details/${product._id}`)}
                                     className="btn btn-primary text-white font-bold py-2 px-4 rounded"
-                                    // variants={buttonVariants}
+                                // variants={buttonVariants}
                                 >
                                     View Details
-                                </motion.button>
+                                </button>
                             </div>
                         </div>
                     </motion.div>

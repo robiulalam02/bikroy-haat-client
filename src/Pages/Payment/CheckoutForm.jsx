@@ -87,6 +87,7 @@ const CheckoutForm = ({ price: amount, product, quantity }) => {
                     productId: product._id,
                     productName: product.itemName,
                     marketName: product.marketName,
+                    vendorEmail: product.vendorEmail,
                     quantity: quantity,
                     billingDetails: {
                         city,

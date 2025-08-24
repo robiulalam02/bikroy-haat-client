@@ -47,7 +47,6 @@ const Login = () => {
       }
     } catch (error) {
       toast.error("invalid email & password")
-      console.log(error.message)
     } finally {
       setLoading(false);
     }
