@@ -5,6 +5,7 @@ import Footer from '../Pages/Shared/Footer'
 import useAuth from '../Hooks/useAuth'
 import Loading from '../Components/Loaders/Loading'
 import { motion } from 'framer-motion';
+import ScrollToTop from '../utils/ScrollToTop'
 
 const MainLayout = () => {
     const { loading } = useAuth();
@@ -21,6 +22,7 @@ const MainLayout = () => {
             </header>
             <main
                 className='min-h-screen'>
+                <ScrollToTop />
                 <Outlet />
             </main>
             <footer>

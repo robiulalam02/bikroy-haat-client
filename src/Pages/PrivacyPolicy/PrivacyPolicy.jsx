@@ -5,8 +5,8 @@ const PrivacyPolicy = () => {
     return (
         <section className='bg-white max-w-screen-2xl mx-auto min-h-dvh my-10 rounded-2xl p-10'>
             {/* <h2 className='text-center text-2xl mb-5 font-semibold'>Frequently Asked Questions</h2> */}
-            <div className='grid grid-cols-2 gap-5'>
-                <div className='space-y-5'>
+            <div className='flex flex-col-reverse md:flex-row gap-5'>
+                <div className='space-y-5 flex-1/2'>
                     <div>
                         <h1 className='text-4xl mb-2 font-semibold'>Privacy Policy - Bikroy Haat</h1>
                         <p>At Bikroy Haat, we value your trust and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our services.</p>
@@ -110,7 +110,7 @@ const PrivacyPolicy = () => {
                         </p>
                     </div>
                 </div>
-                <div>
+                <div className='flex-1/2'>
                     <img src="privacy-policy.jpg" alt="contact us" className='' />
                 </div>
             </div>

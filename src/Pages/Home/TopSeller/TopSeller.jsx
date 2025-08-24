@@ -27,12 +27,17 @@ const TopSeller = () => {
                 <span className="text-primary">Top Sellers</span> this Month
             </motion.h2>
 
-            <div className='grid grid-cols-1 md:grid-cols-5 gap-1 max-w-screen-2xl mx-auto'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 max-w-screen-2xl mx-auto px-4'>
                 {
                     sellers?.map(seller=> (
-                        <div className='flex flex-col items-center gap-4 p-4'>
-                            <img src="store.png" className='w-14' alt="" />
-                            <h3 className='text-xl font-semibold'>{seller._id.marketName}</h3>
+                        <div className='flex flex-col items-center justify-between gap-4 p-4 shadow rounded lg:shadow-none text-center'>
+                            <motion.img 
+                            initial={{opacity:0, y:50}}
+                            whileInView={{opacity:1, y:0}}
+                            transition={{ duration: 0.6, ease: "easeOut" }}
+                            viewport={{ once: true }}
+                            src="store.png" className='w-14' alt="" />
+                            <h3 className='text-lg lg:text-xl font-semibold'>{seller._id.marketName}</h3>
                             <p className='font-medium text-lg'>Total Sells: {seller.totalQuantity > 10 ? seller.totalQuantity : `0${seller.totalQuantity}`}</p>
                         </div>
                     ))

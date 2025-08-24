@@ -1,31 +1,53 @@
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
-import { useLocation, useNavigate } from "react-router";
+import { useLoaderData, useLocation, useNavigate } from "react-router";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Providers/AuthContext";
 import Spinner from "../../Components/Loaders/Spinner";
 import Swal from "sweetalert2";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet-async";
+import AdminCredetialsToast from "../../Components/Toasts/AdminCredetialsToast";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Login = () => {
+
+  const { pathname } = useLocation();
 
   const { googleSignIn, userLogin } = useContext(AuthContext)
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const [showAdminCredential, setShowAdminCredential] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowAdminCredential(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   const {
     register,
     handleSubmit,
-    watch,
+    setValue,
+    clearErrors,
     formState: { errors },
-    reset
   } = useForm()
+
+  // Autofill admin credentials
+  const handleFill = () => {
+    setValue("email", "programmingadmin@hero.com");
+    setValue("password", "@#Admin09");
+
+    setShowAdminCredential(false)
+    clearErrors(["email", "password"]);
+  };
 
   const onSubmit = async (data) => {
     const { email, password } = data;
@@ -90,7 +112,7 @@ const Login = () => {
   }
 
   return (
-    <section className="flex items-center justify-center  px-4 py-15">
+    <section className="flex items-center justify-center  px-4 py-15 relative">
       <Helmet>
         <title>User Login</title>
       </Helmet>
@@ -121,16 +143,19 @@ const Login = () => {
         {/* Login Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email */}
-          <div>
+          <div className="relative">
             <label className="block text-sm text-gray-600 mb-1">Email</label>
             <input
               type="email"
               name="email"
-              required
               className="w-full border-b border-gray-300 focus:outline-none focus:border-primary transition placeholder:text-sm p-2"
               placeholder="you@example.com"
-              {...register("email")}
+              {...register("email", { required: "Email is required" })}
+
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm absolute">{errors.email.message}</p>
+            )}
           </div>
 
           {/* Password */}
@@ -139,11 +164,13 @@ const Login = () => {
             <input
               type={showPass ? 'text' : 'password'}
               name="password"
-              required
               className="w-full border-b border-gray-300 focus:outline-none focus:border-primary transition placeholder:text-sm p-2"
               placeholder="••••••••"
-              {...register("password")}
+              {...register("password", { required: "Password is required" })}
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm absolute">{errors.password.message}</p>
+            )}
             <button onClick={() => setShowPass(!showPass)} type='button' className='absolute top-9 right-4'>
               {
                 showPass ?
@@ -179,6 +206,19 @@ const Login = () => {
           </button>
         </p>
       </div>
+      <AnimatePresence>
+        {
+          showAdminCredential &&
+          <motion.div
+            initial={{  opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}   // 👈 animate down when removed
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className='absolute top-1 lg:top-auto bottom-auto lg:bottom-0'>
+            <AdminCredetialsToast setShowAdminCredential={setShowAdminCredential} handleFill={handleFill} />
+          </motion.div>
+        }
+      </AnimatePresence>
     </section>
   );
 }

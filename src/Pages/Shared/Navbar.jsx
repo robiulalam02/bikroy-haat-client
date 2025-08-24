@@ -25,6 +25,15 @@ const Navbar = () => {
                     }
                     to="/all-products">All Products</NavLink>
             </li>
+            {profile && (
+                <li>
+                    <NavLink
+                        className={({ isActive }) =>
+                            isActive ? 'bg-black/10 px-2 py-1 rounded' : 'px-2 py-1 rounded'
+                        }
+                        to="/dashboard/home">Dashboard</NavLink>
+                </li>
+            )}
             <li>
                 <NavLink
                     className={({ isActive }) =>
@@ -39,15 +48,7 @@ const Navbar = () => {
                     }
                     to="/contact-us">Contact</NavLink>
             </li>
-            {profile && (
-                <li>
-                    <NavLink
-                        className={({ isActive }) =>
-                            isActive ? 'bg-black/10 px-2 py-1 rounded' : 'px-2 py-1 rounded'
-                        }
-                        to="/dashboard/home">Dashboard</NavLink>
-                </li>
-            )}
+
             {
                 !profile ?
                     <>
@@ -79,7 +80,7 @@ const Navbar = () => {
     return (
         <nav className='bg-gradient-to-r from-base-200 via-[#d8ffa1] to-base-100 shadow-sm w-full '>
             {/* Main Navbar Content */}
-            <div className="w-full flex items-center justify-between max-w-screen-2xl mx-auto p-0 navbar">
+            <div className="w-full flex items-center justify-between max-w-screen-2xl mx-auto px-4 p-0 navbar">
                 <div className="flex-none lg:hidden">
                     {/* Drawer toggle button for small screens */}
                     <button

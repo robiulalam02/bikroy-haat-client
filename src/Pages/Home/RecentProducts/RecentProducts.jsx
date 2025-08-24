@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
+import { PiEyeLight } from 'react-icons/pi';
 
 const RecentProducts = () => {
 
@@ -31,7 +32,7 @@ const RecentProducts = () => {
 
             <motion.div
                 data-aos="fade-up-left"
-                className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 justify-center max-w-screen-2xl mx-auto"
+                className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 justify-center max-w-screen-2xl mx-auto px-4"
             // variants={containerVariants}
             // initial="hidden"
             // whileInView="visible"
@@ -44,8 +45,8 @@ const RecentProducts = () => {
                     // variants={cardVariants}
                     >
                         <div className="relative">
-                            <div className="h-46 w-full overflow-hidden">
-                                <img className="h-full w-full object-cover" src={product.image} alt="Product Image" />
+                            <div className="h-48 lg:h-60 w-full overflow-hidden flex justify-center">
+                                <img className="h-full" src={product.image} alt="Product Image" />
                             </div>
                             <div className="absolute top-0 right-0 bg-black/40 text-white px-2 py-1 m-2 rounded-md text-sm font-medium">
                                 {product.date}
@@ -60,10 +61,9 @@ const RecentProducts = () => {
                                 <p className="font-semibold text-lg"><span className="text-green-600">{product.pricePerUnit}৳</span> /kg</p>
                                 <button
                                     onClick={() => navigate(`/product-details/${product._id}`)}
-                                    className="btn btn-primary text-white font-bold py-2 px-4 rounded"
-                                // variants={buttonVariants}
+                                    className="group relative btn btn-primary text-white font-bold py-2 px-4 rounded"
                                 >
-                                    View Details
+                                    <div class="mr-0 w-0 -translate-x-[100%] opacity-0 transition-all duration-200 group-hover:mr-1 group-hover:w-5 group-hover:translate-x-0 group-hover:opacity-100"><PiEyeLight className="w-5 h-5" /></div><span>Details</span>
                                 </button>
                             </div>
                         </div>

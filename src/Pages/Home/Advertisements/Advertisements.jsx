@@ -23,7 +23,7 @@ export default function Advertisements() {
 
   return (
     <section className="bg-gray-50 py-10 px-4 h-[500px]s">
-      <div className="max-w-screen-2xl mx-auto">
+      <div className="max-w-screen-2xl mx-auto px-4">
         <motion.h2
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}

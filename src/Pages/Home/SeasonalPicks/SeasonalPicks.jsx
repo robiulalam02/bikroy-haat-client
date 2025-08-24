@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
+import { Typewriter } from 'react-simple-typewriter'
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -22,10 +23,23 @@ export default function SeasonalPicks() {
         <div className="absolute inset-0 z-20 flex items-center justify-center h-full w-full bg-gray-900/75"></div>
 
 
-        <div className="absolute inset-1 z-50 h-full flex flex-col text-center justify-center items-center mx-auto max-w-screen-2xl">
-          <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Connecting Communities with Everyday Essentials</h1>
-          <p class="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">At Bikroy Haat, we bring transparency, convenience, and trust to your shopping experience. Discover real-time market prices, compare trends, and shop directly from trusted local vendors. all in one reliable platform.</p>
-          <button onClick={()=>navigate('/about-us')} href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-primary rounded-lg">
+        <div className="absolute inset-1 z-50 h-full flex flex-col text-center justify-center items-center mx-auto max-w-screen-2xl px-4">
+          <h1 className="mb-4 text-3xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+            Connecting Communities with Everyday <br />
+            <span className="text-primary">
+              <Typewriter
+                words={['Essentials', 'Products', 'Services', 'Care', 'Support']}
+                loop={0} // 0 = infinite
+                cursor
+                cursorStyle="|"
+                typeSpeed={80}
+                deleteSpeed={50}
+                delaySpeed={2000}
+              />
+            </span>
+          </h1>
+          <p class="mb-6 text-base font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">At Bikroy Haat, we bring transparency, convenience, and trust to your shopping experience. Discover real-time market prices, compare trends, and shop directly from trusted local vendors. all in one reliable platform.</p>
+          <button onClick={() => navigate('/about-us')} href="#" class="inline-flex items-center justify-center px-5 py-3 text-sm md:text-base font-medium text-center text-white bg-primary rounded-lg">
             Learn more
             <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />

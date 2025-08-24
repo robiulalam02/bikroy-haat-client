@@ -2,9 +2,9 @@ import React from 'react'
 
 const AboutUs = () => {
     return (
-        <section className='bg-white max-w-screen-2xl mx-auto min-h-dvh my-10 rounded-2xl p-10'>
-            <div className='grid grid-cols-2 gap-5'>
-                <div>
+        <section className='bg-white max-w-screen-2xl mx-auto min-h-dvh my-10 rounded-2xl p-10 '>
+            <div className='flex flex-col-reverse lg:flex-row gap-5'>
+                <div className='flex-1/2'>
                     <div className='flex flex-col gap-3 text-lg text-gray-700'>
                         <p>Welcome to Bikroy Haat your trusted place to track and explore daily market prices & shop daily needs from our trusted vendors.</p>
                         <p>We believe that everyone deserves clear, fair, and updated price information before they buy anything from the local market. That’s why Bikroy Haat connects vendors and buyers in one platform, where vendors can share daily prices, and buyers can compare, review, and even purchase products securely through Stripe payment.</p>
@@ -50,7 +50,7 @@ const AboutUs = () => {
                         </div>
                     </div>
                 </div>
-                <div>
+                <div className='flex-1/2'>
                     <img src="about-us.svg" alt="" />
                 </div>
             </div>

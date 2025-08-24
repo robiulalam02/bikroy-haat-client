@@ -9,30 +9,30 @@ import { useNavigate } from "react-router";
 // import banner from '../../../assets/banner.jpg'
 
 const banners = [
-    {
-        id: 1,
-        image: "/banner-3.jpeg",
-        title: "Track Daily Market Prices",
-        subtitle: "Live updates from your local bazaar",
-    },
-    {
-        id: 2,
-        image: "/banner-2.jpg",
-        title: "Compare Prices Instantly",
-        subtitle: "Buy smarter. Save more.",
-    },
-    {
-        id: 3,
-        image: "/banner-1.jpg",
-        title: "Fresh Deals from Vendors",
-        subtitle: "Exclusive offers and daily price drops.",
-    },
+  {
+    id: 1,
+    image: "/banner-3.jpeg",
+    title: "Track Daily Market Prices",
+    subtitle: "Live updates from your local bazaar",
+  },
+  {
+    id: 2,
+    image: "/banner-2.jpg",
+    title: "Compare Prices Instantly",
+    subtitle: "Buy smarter. Save more.",
+  },
+  {
+    id: 3,
+    image: "/banner-1.jpg",
+    title: "Fresh Deals from Vendors",
+    subtitle: "Exclusive offers and daily price drops.",
+  },
 ];
 
 export default function BannerSlider() {
   const navigate = useNavigate();
-    return (
-        <div className="relative w-full h-[600px] overflow-hidden">
+  return (
+    <div className="relative w-full h-[600px] overflow-hidden">
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         slidesPerView={1}
@@ -52,7 +52,7 @@ export default function BannerSlider() {
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20 z-10" />
 
               {/* Content */}
-              <div className="max-w-screen-2xl mx-auto absolute inset-0 flex flex-col justify-center items-center px-4 z-20">
+              <div className="max-w-screen-2xl mx-auto absolute inset-0 flex flex-col justify-center items-center text-center px-4 z-20">
                 <motion.h1
                   initial={{ opacity: 0, x: -40 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -72,13 +72,13 @@ export default function BannerSlider() {
                 </motion.p>
 
                 <motion.button
-                onClick={()=> navigate('/all-products')}
+                  onClick={() => navigate('/all-products')}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 0.6 }}
-                  className="mt-6 px-6 py-2 bg-primary hover:bg-primary/90 transition-all duration-300 text-white font-semibold rounded shadow-lg"
+                  className="group relative mt-6 px-6 py-2 bg-primary hover:bg-primary/90 transition-all duration-300 text-white font-semibold rounded shadow-lg"
                 >
-                  Explore
+                  <span class="relative inline-flex overflow-hidden"><div class="translate-y-0 skew-y-0 transition duration-500 group-hover:-translate-y-[110%] group-hover:skew-y-12">Explore</div><div class="absolute translate-y-[110%] skew-y-12 transition duration-500 group-hover:translate-y-0 group-hover:skew-y-0">Explore</div></span>
                 </motion.button>
               </div>
             </div>
@@ -86,5 +86,5 @@ export default function BannerSlider() {
         ))}
       </Swiper>
     </div>
-    );
+  );
 }

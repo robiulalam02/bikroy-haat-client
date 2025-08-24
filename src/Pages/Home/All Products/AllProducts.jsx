@@ -8,7 +8,7 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { BsArrowLeftRight } from "react-icons/bs";
-import { PiEyeThin } from 'react-icons/pi';
+import { PiEyeLight, PiEyeThin } from 'react-icons/pi';
 import ErrorMessage from '../../../Components/Error Page/ErrorMessage';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
@@ -261,16 +261,11 @@ const AllProducts = () => {
                       <p className="text-xl font-extrabold leading-tight text-gray-900">৳{parseFloat(product.pricePerUnit).toFixed(2)}</p>
 
                       {/* Using Link for navigation */}
-                      <button onClick={() => navigate(`/product-details/${product._id}`)} type="button" className="inline-flex items-center gap-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300">
-
-                        <svg className="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-
-                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6" />
-
-                        </svg>
-
-                        View Details
-
+                      <button
+                        onClick={() => navigate(`/product-details/${product._id}`)}
+                        className="group relative btn btn-primary text-white py-2 px-4 rounded"
+                      >
+                        <div class="mr-0 w-0 -translate-x-[100%] opacity-0 transition-all duration-200 group-hover:mr-1 group-hover:w-5 group-hover:translate-x-0 group-hover:opacity-100"><PiEyeLight className="w-5 h-5" /></div><span className='font-light'>Details</span>
                       </button>
                     </div>
                   </div>

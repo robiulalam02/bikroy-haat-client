@@ -24,7 +24,7 @@ const tips = [
 export default function BuyerTips() {
   return (
     <section className="py-12 min-h-[600px] px-4 bg-white">
-      <div className="max-w-screen-2xl mx-auto">
+      <div className="max-w-screen-2xl mx-auto px-4">
         <motion.h2
           initial={{ opacity: 0, x: -50 }} // Changed heading animation to slide from left
           whileInView={{ opacity: 1, x: 0 }}
@@ -63,7 +63,7 @@ export default function BuyerTips() {
                   {tip.title}
                 </h3>
                 <p
-                  className="text-gray-600 text-sm px-10"
+                  className="text-gray-600 text-sm px-0 lg:px-10"
                 >
                   {tip.desc}
                 </p>

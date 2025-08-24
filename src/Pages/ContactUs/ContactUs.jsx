@@ -24,8 +24,8 @@ const ContactUs = () => {
 
     return (
         <section className="bg-white max-w-screen-2xl mx-auto min-h-dvh my-10 rounded-2xl p-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
+            <div className="flex flex-col-reverse md:flex-row gap-5">
+                <div className="flex-1/2">
                     <h2 className="text-2xl font-semibold">Send Message</h2>
                     <p className="text-gray-600 text-sm">
                         We’d love to hear from you! Whether you have a question about our
@@ -95,7 +95,7 @@ const ContactUs = () => {
                 </div>
 
                 {/* Image */}
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center flex-1/2">
                     <img src="contact-us.svg" alt="contact us" />
                 </div>
             </div>

@@ -65,8 +65,8 @@ const Footer = () => {
                                 Services
                             </p>
                             <nav className="flex flex-col mt-4 space-y-2 text-sm text-gray-500">
-                                <Link to="/about-us" className="hover:opacity-75" > Buy Products </Link>
-                                <Link to="/contact-us" className="hover:opacity-75" > Compare Price </Link>
+                                <Link to="/all-products" className="hover:opacity-75" > Buy Products </Link>
+                                <Link to="/all-products" className="hover:opacity-75" > Compare Price </Link>
                                 <Link to="/FAQs" className="hover:opacity-75" > Become a Vendor </Link>
                                 {/* <a className="hover:opacity-75" > Meet the Team </a>
                                 <a className="hover:opacity-75" > History </a>

@@ -1,7 +1,9 @@
 import React from "react";
 import error from "../../assets/error.png"
+import { useNavigate } from "react-router";
 
 const ErrorMessage = () => {
+    const navigate = useNavigate()
     return (
         <section className="relative z-10 py-[120px]">
             <div className="container mx-auto">
@@ -15,12 +17,12 @@ const ErrorMessage = () => {
                             <p className="mb-8 text-lg ">
                                 The page you are looking for it maybe deleted
                             </p>
-                            <a
-                                href="javascript:void(0)"
+                            <button
+                                onClick={()=>navigate('/')}
                                 className="inline-block rounded-lg border border-primary px-8 py-3 text-center text-primary font-semibold  transition hover:bg-primary hover:text-white"
                             >
                                 Go To Home
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import Logo from '../Components/Logo/Logo'
 import signUpImg from '../assets/sign-up.jpeg'
 import { TfiClose } from 'react-icons/tfi'
 import { Outlet, useNavigate } from 'react-router'
+import AdminCredetialsToast from '../Components/Toasts/AdminCredetialsToast'
 
 const Authentication = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Authentication = () => {
         </button>
         <img className='h-full w-full object-cover' src={signUpImg} alt="" />
       </div>
+      
     </div>
   )
 }
